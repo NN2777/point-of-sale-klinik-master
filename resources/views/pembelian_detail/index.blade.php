@@ -113,6 +113,12 @@
                                 </div>
                             </div>
                             <div class="form-group row">
+                                <label for="ppn" class="col-lg-2 control-label">PPN</label>
+                                <div class="col-lg-8">
+                                    <input type="number" name="ppn" id="ppn" class="form-control" value="{{ $ppn }}">
+                                </div>
+                            </div>
+                            <div class="form-group row">
                                 <label for="bayar" class="col-lg-2 control-label">Bayar</label>
                                 <div class="col-lg-8">
                                     <input type="text" id="bayarrp" class="form-control">
@@ -159,10 +165,11 @@
             ],
             dom: 'Brt',
             bSort: false,
+
             paginate: false
         })
         .on('draw.dt', function () {
-            loadForm($('#diskon').val());
+            loadForm($('#diskon').val(), $('ppn').val());
         });
         table2 = $('.table-produk').DataTable();
 
@@ -188,7 +195,7 @@
                 })
                 .done(response => {
                     $(this).on('mouseout', function () {
-                        table.ajax.reload(() => loadForm($('#diskon').val()));
+                        table.ajax.reload(() => loadForm($('#diskon').val(), $('#ppn').val()));
                     });
                 })
                 .fail(errors => {
@@ -197,13 +204,33 @@
                 });
         });
 
-        $(document).on('input', '#diskon', function () {
-            if ($(this).val() == "") {
-                $(this).val(0).select();
+        $(document).on('input', '#diskon', '#ppn', function () {
+            if ($('#diskon').val() == "") {
+                $('#diskon').val(0).select();
+            }
+            if ($('#ppn').val() == "") {
+                $('#ppn').val(0).select();
             }
 
-            loadForm($(this).val());
+            loadForm($('#diskon').val(), $('#ppn').val());
+
         });
+
+        // $(document).on('input', '#diskon', function () {
+        //     if ($(this).val() == "") {
+        //         $(this).val(0).select();
+        //     }
+
+        //     loadForm($(this).val());
+        // });
+
+        // $(document).on('input', '#ppn', function () {
+        //     if ($(this).val() == "") {
+        //         $(this).val(0).select();
+        //     }
+
+        //     loadForm($(this).val());
+        // });
 
         $('.btn-simpan').on('click', function () {
             $('.form-pembelian').submit();
@@ -229,7 +256,7 @@
         $.post('{{ route('pembelian_detail.store') }}', $('.form-produk').serialize())
             .done(response => {
                 $('#kode_produk').focus();
-                table.ajax.reload(() => loadForm($('#diskon').val()));
+                table.ajax.reload(() => loadForm($('#diskon').val(), $('ppn').val()));
             })
             .fail(errors => {
                 alert('Tidak dapat menyimpan data');
@@ -244,7 +271,7 @@
                     '_method': 'delete'
                 })
                 .done((response) => {
-                    table.ajax.reload(() => loadForm($('#diskon').val()));
+                    table.ajax.reload(() => loadForm($('#diskon').val(), $('ppn').val()));
                 })
                 .fail((errors) => {
                     alert('Tidak dapat menghapus data');
@@ -253,11 +280,11 @@
         }
     }
 
-    function loadForm(diskon = 0) {
+    function loadForm(diskon = 0, ppn = 0) {
         $('#total').val($('.total').text());
         $('#total_item').val($('.total_item').text());
 
-        $.get(`{{ url('/pembelian_detail/loadform') }}/${diskon}/${$('.total').text()}`)
+        $.get(`{{ url('/pembelian_detail/loadform') }}/${diskon}/${ppn}/${$('.total').text()}`)
             .done(response => {
                 $('#totalrp').val('Rp. '+ response.totalrp);
                 $('#bayarrp').val('Rp. '+ response.bayarrp);

@@ -28,6 +28,7 @@
                         <th>Total Item</th>
                         <th>Total Harga</th>
                         <th>Diskon</th>
+                        <th>PPN</th>
                         <th>Total Bayar</th>
                         <th width="15%"><i class="fa fa-cog"></i></th>
                     </thead>
@@ -61,6 +62,7 @@
                 {data: 'total_item'},
                 {data: 'total_harga'},
                 {data: 'diskon'},
+                {data: 'ppn'},
                 {data: 'bayar'},
                 {data: 'aksi', searchable: false, sortable: false},
             ]
