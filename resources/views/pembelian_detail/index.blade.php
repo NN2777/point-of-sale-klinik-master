@@ -1,10 +1,11 @@
 @extends('layouts.master')
 
 @section('title')
-    Transaksi Pembelian
+Transaksi Pembelian
 @endsection
 
 @push('css')
+<link rel="stylesheet" href="{{ asset('/AdminLTE-2/bower_components/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css') }}">
 <style>
     .tampil-bayar {
         font-size: 5em;
@@ -32,8 +33,8 @@
 @endpush
 
 @section('breadcrumb')
-    @parent
-    <li class="active">Transaksi Pembelian</li>
+@parent
+<li class="active">Transaksi Pembelian</li>
 @endsection
 
 @section('content')
@@ -57,7 +58,7 @@
                 </table>
             </div>
             <div class="box-body">
-                    
+
                 <form class="form-produk">
                     @csrf
                     <div class="form-group row">
@@ -119,6 +120,20 @@
                                 </div>
                             </div>
                             <div class="form-group row">
+                                <label for="carabayar" class="col-lg-2 control-label">Cara Pembayaran</label>
+                                <div class="col-lg-8">
+                                    <input type="radio" name="status" value="Tunai">Tunai
+                                    <input type="radio" name="status" value="Kredit">Kredit
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="jatuh_tempo" class="col-lg-2 control-label">Jatuh Tempo</label>
+                                <div class="col-lg-8">
+                                <input type="text" name="jatuh_tempo" id="jatuh_tempo" class="form-control datepicker" required autofocus value="{{ date('Y-m-d') }}" style="border-radius: 0 !important;">
+                                <span class="help-block with-errors"></span>
+                                </div>
+                            </div>
+                            <div class="form-group row">
                                 <label for="bayar" class="col-lg-2 control-label">Bayar</label>
                                 <div class="col-lg-8">
                                     <input type="text" id="bayarrp" class="form-control">
@@ -140,40 +155,58 @@
 @endsection
 
 @push('scripts')
+<script src="{{ asset('/AdminLTE-2/bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js') }}"></script>
 <script>
     let table, table2;
 
-    $(function () {
+    $(function() {
         $('body').addClass('sidebar-collapse');
 
         table = $('.table-pembelian').DataTable({
-            responsive: true,
-            processing: true,
-            serverSide: true,
-            autoWidth: false,
-            ajax: {
-                url: '{{ route('pembelian_detail.data', $id_pembelian) }}',
-            },
-            columns: [
-                {data: 'DT_RowIndex', searchable: false, sortable: false},
-                {data: 'kode_produk'},
-                {data: 'nama_produk'},
-                {data: 'harga_beli'},
-                {data: 'jumlah'},
-                {data: 'subtotal'},
-                {data: 'aksi', searchable: false, sortable: false},
-            ],
-            dom: 'Brt',
-            bSort: false,
+                responsive: true,
+                processing: true,
+                serverSide: true,
+                autoWidth: false,
+                ajax: {
+                    url: '{{ route('pembelian_detail.data', $id_pembelian) }}',
+                },
+                columns: [{
+                        data: 'DT_RowIndex',
+                        searchable: false,
+                        sortable: false
+                    },
+                    {
+                        data: 'kode_produk'
+                    },
+                    {
+                        data: 'nama_produk'
+                    },
+                    {
+                        data: 'harga_beli'
+                    },
+                    {
+                        data: 'jumlah'
+                    },
+                    {
+                        data: 'subtotal'
+                    },
+                    {
+                        data: 'aksi',
+                        searchable: false,
+                        sortable: false
+                    },
+                ],
+                dom: 'Brt',
+                bSort: false,
 
-            paginate: false
-        })
-        .on('draw.dt', function () {
-            loadForm($('#diskon').val(), $('ppn').val());
-        });
+                paginate: false
+            })
+            .on('draw.dt', function() {
+                loadForm($('#diskon').val(), $('ppn').val());
+            });
         table2 = $('.table-produk').DataTable();
 
-        $(document).on('input', '.quantity', function () {
+        $(document).on('input', '.quantity', function() {
             let id = $(this).data('id');
             let jumlah = parseInt($(this).val());
 
@@ -194,7 +227,7 @@
                     'jumlah': jumlah
                 })
                 .done(response => {
-                    $(this).on('mouseout', function () {
+                    $(this).on('mouseout', function() {
                         table.ajax.reload(() => loadForm($('#diskon').val(), $('#ppn').val()));
                     });
                 })
@@ -204,7 +237,12 @@
                 });
         });
 
-        $(document).on('input', '#diskon', '#ppn', function () {
+        $('.datepicker').datepicker({
+            format: 'yyyy-mm-dd',
+            autoclose: true
+        });
+
+        $(document).on('input', '#diskon', '#ppn', function() {
             if ($('#diskon').val() == "") {
                 $('#diskon').val(0).select();
             }
@@ -232,7 +270,7 @@
         //     loadForm($(this).val());
         // });
 
-        $('.btn-simpan').on('click', function () {
+        $('.btn-simpan').on('click', function() {
             $('.form-pembelian').submit();
         });
     });
@@ -286,10 +324,10 @@
 
         $.get(`{{ url('/pembelian_detail/loadform') }}/${diskon}/${ppn}/${$('.total').text()}`)
             .done(response => {
-                $('#totalrp').val('Rp. '+ response.totalrp);
-                $('#bayarrp').val('Rp. '+ response.bayarrp);
+                $('#totalrp').val('Rp. ' + response.totalrp);
+                $('#bayarrp').val('Rp. ' + response.bayarrp);
                 $('#bayar').val(response.bayar);
-                $('.tampil-bayar').text('Rp. '+ response.bayarrp);
+                $('.tampil-bayar').text('Rp. ' + response.bayarrp);
                 $('.tampil-terbilang').text(response.terbilang);
             })
             .fail(errors => {

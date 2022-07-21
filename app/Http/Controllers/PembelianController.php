@@ -65,6 +65,7 @@ class PembelianController extends Controller
         $pembelian->total_harga = 0;
         $pembelian->ppn         = 0;
         $pembelian->diskon      = 0;
+        $pembelian->status      = "tunai";
         $pembelian->bayar       = 0;
         $pembelian->save();
 
@@ -81,6 +82,8 @@ class PembelianController extends Controller
         $pembelian->total_harga = $request->total;
         $pembelian->diskon = $request->diskon;
         $pembelian->ppn = $request->ppn;
+        $pembelian->status = $request->status;
+        $pembelian->jatuh_tempo = $request->jatuh_tempo;
         $pembelian->bayar = $request->bayar;
         $pembelian->update();
 

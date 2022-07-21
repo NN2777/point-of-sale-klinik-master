@@ -20,6 +20,8 @@ class LaporanController extends Controller
             $tanggalAkhir = $request->tanggal_akhir;
         }
 
+        // dd($tanggalAwal, $tanggalAkhir);
+
         return view('laporan.index', compact('tanggalAwal', 'tanggalAkhir'));
     }
 
