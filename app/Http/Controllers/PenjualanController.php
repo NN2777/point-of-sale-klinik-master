@@ -42,6 +42,12 @@ class PenjualanController extends Controller
             ->editColumn('diskon', function ($penjualan) {
                 return $penjualan->diskon . '%';
             })
+            ->editColumn('ppn', function ($penjualan) {
+                return $penjualan->ppn . '%';
+            })
+            ->editColumn('status', function ($penjualan) {
+                return $penjualan->status;
+            })
             ->editColumn('kasir', function ($penjualan) {
                 return $penjualan->user->name ?? '';
             })
@@ -64,6 +70,8 @@ class PenjualanController extends Controller
         $penjualan->total_item = 0;
         $penjualan->total_harga = 0;
         $penjualan->diskon = 0;
+        $penjualan->ppn = 0;
+        $penjualan->status = "";
         $penjualan->bayar = 0;
         $penjualan->diterima = 0;
         $penjualan->id_user = auth()->id();
@@ -80,6 +88,9 @@ class PenjualanController extends Controller
         $penjualan->total_item = $request->total_item;
         $penjualan->total_harga = $request->total;
         $penjualan->diskon = $request->diskon;
+        $penjualan->ppn = $request->ppn;
+        $penjualan->status = $request->status;
+        $penjualan->jatuh_tempo = $request->jatuh_tempo;
         $penjualan->bayar = $request->bayar;
         $penjualan->diterima = $request->diterima;
         $penjualan->update();

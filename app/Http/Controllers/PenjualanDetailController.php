@@ -15,14 +15,15 @@ class PenjualanDetailController extends Controller
     {
         $produk = Produk::orderBy('nama_produk')->get();
         $member = Member::orderBy('nama')->get();
-        $diskon = Setting::first()->diskon ?? 0;
 
         // Cek apakah ada transaksi yang sedang berjalan
         if ($id_penjualan = session('id_penjualan')) {
             $penjualan = Penjualan::find($id_penjualan);
+            $diskon = Penjualan::find($id_penjualan)->diskon ?? 0;
+            $ppn = Penjualan::find($id_penjualan)->ppn ?? 0;
             $memberSelected = $penjualan->member ?? new Member();
 
-            return view('penjualan_detail.index', compact('produk', 'member', 'diskon', 'id_penjualan', 'penjualan', 'memberSelected'));
+            return view('penjualan_detail.index', compact('produk', 'member', 'diskon', 'ppn', 'id_penjualan', 'penjualan', 'memberSelected'));
         } else {
             if (auth()->user()->level == 1) {
                 return redirect()->route('transaksi.baru');
@@ -112,9 +113,9 @@ class PenjualanDetailController extends Controller
         return response(null, 204);
     }
 
-    public function loadForm($diskon = 0, $total = 0, $diterima = 0)
+    public function loadForm($diskon = 0, $total = 0, $diterima = 0, $ppn = 0)
     {
-        $bayar   = $total + ($diskon / 100 * $total);
+        $bayar   = $total - ($diskon / 100 * $total) + ($ppn / 100 * $total);
         $kembali = ($diterima != 0) ? $diterima - $bayar : 0;
         $data    = [
             'totalrp' => format_uang($total),

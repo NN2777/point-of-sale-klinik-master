@@ -104,9 +104,29 @@ Transaksi Penjualan
                                 </div>
                             </div>
                             <div class="form-group row">
-                                <label for="diskon" class="col-lg-2 control-label">Pajak</label>
+                                <label for="diskon" class="col-lg-2 control-label">Diskon</label>
                                 <div class="col-lg-8">
-                                    <input type="number" name="diskon" id="diskon" class="form-control" value="0">
+                                    <input type="number" name="diskon" id="diskon" class="form-control" value="{{ $diskon }}">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="ppn" class="col-lg-2 control-label">PPN</label>
+                                <div class="col-lg-8">
+                                    <input type="number" name="ppn" id="ppn" class="form-control" value="{{ $ppn }}">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="carabayar" class="col-lg-2 control-label">Cara Pembayaran</label>
+                                <div class="col-lg-8">
+                                    <input type="radio" name="status" value="Tunai">Tunai
+                                    <input type="radio" name="status" value="Kredit">Kredit
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="jatuh_tempo" class="col-lg-2 control-label">Jatuh Tempo</label>
+                                <div class="col-lg-8">
+                                <input type="text" name="jatuh_tempo" id="jatuh_tempo" class="form-control datepicker" required autofocus value="{{ date('Y-m-d') }}" style="border-radius: 0 !important;">
+                                <span class="help-block with-errors"></span>
                                 </div>
                             </div>
                             <div class="form-group row">
@@ -235,7 +255,7 @@ Transaksi Penjualan
                 $(this).val(0).select();
             }
 
-            loadForm($(this).val());
+            loadForm($(this).val(), $('#diterima').val(), $('#ppn').val());
         });
 
         $('#diterima').on('input', function() {
@@ -243,10 +263,18 @@ Transaksi Penjualan
                 $(this).val(0).select();
             }
 
-            loadForm($('#diskon').val(), $(this).val());
+            loadForm($('#diskon').val(), $(this).val(), $('#ppn').val());
         }).focus(function() {
             $(this).select();
         });
+
+        $('#ppn').on('input', function() {
+            if ($(this).val() == "") {
+                $(this).val(0).select();
+            }
+
+            loadForm($('#diskon').val(), $('#diterima').val(), $(this).val());
+        })
 
         $('.btn-simpan').on('click', function() {
             $('.form-penjualan').submit();
@@ -313,11 +341,11 @@ Transaksi Penjualan
         }
     }
 
-    function loadForm(diskon = 0, diterima = 0) {
+    function loadForm(diskon = 0, diterima = 0, ppn = 0) {
         $('#total').val($('.total').text());
         $('#total_item').val($('.total_item').text());
 
-        $.get(`{{ url('/transaksi/loadform') }}/${diskon}/${$('.total').text()}/${diterima}`)
+        $.get(`{{ url('/transaksi/loadform') }}/${diskon}/${$('.total').text()}/${diterima}/${ppn}`)
             .done(response => {
                 $('#totalrp').val('Rp. ' + response.totalrp);
                 $('#bayarrp').val('Rp. ' + response.bayarrp);

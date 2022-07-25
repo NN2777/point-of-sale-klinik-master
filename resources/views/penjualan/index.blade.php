@@ -22,7 +22,10 @@
                         <th>Total Item</th>
                         <th>Total Harga</th>
                         <th>Diskon</th>
+                        <th>PPN</th>
+                        <th>Status</th>
                         <th>Total Bayar</th>
+                        <th>Jatuh Tempo</th>
                         <th>Kasir</th>
                         <th width="15%"><i class="fa fa-cog"></i></th>
                     </thead>
@@ -55,7 +58,10 @@
                 {data: 'total_item'},
                 {data: 'total_harga'},
                 {data: 'diskon'},
+                {data: 'ppn'},
+                {data: 'status'},
                 {data: 'bayar'},
+                {data: 'jatuh_tempo'},
                 {data: 'kasir'},
                 {data: 'aksi', searchable: false, sortable: false},
             ]
