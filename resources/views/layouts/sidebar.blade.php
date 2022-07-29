@@ -73,7 +73,12 @@
             <li class="header">REPORT</li>
             <li>
                 <a href="{{ route('laporan.index') }}">
-                    <i class="fa fa-file-pdf-o"></i> <span>Laporan</span>
+                    <i class="fa fa-file-pdf-o"></i> <span>List Laporan</span>
+                </a>
+            </li>
+            <li>
+                <a href="{{ route('labarugi.index') }}">
+                    <i class="fa fa-file-pdf-o"></i> <span>Laporan labarugi</span>
                 </a>
             </li>
             <li class="header">SYSTEM</li>

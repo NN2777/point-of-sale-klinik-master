@@ -4,6 +4,9 @@ use App\Http\Controllers\{
     DashboardController,
     KategoriController,
     LaporanController,
+    LaporanKerjaController,
+    LaporanLabaRugiController,
+    LaporanPembelianController,
     ProdukController,
     MemberController,
     PengeluaranController,
@@ -84,9 +87,14 @@ Route::group(['middleware' => 'auth'], function () {
     });
 
     Route::group(['middleware' => 'level:1'], function () {
-        Route::get('/laporan', [LaporanController::class, 'index'])->name('laporan.index');
-        Route::get('/laporan/data/{awal}/{akhir}', [LaporanController::class, 'data'])->name('laporan.data');
-        Route::get('/laporan/pdf/{awal}/{akhir}', [LaporanController::class, 'exportPDF'])->name('laporan.export_pdf');
+        Route::get('/laporan/index', [LaporanController::class, 'index'])->name('laporan.index');
+
+        Route::get('/laporan-labarugi', [LaporanLabaRugiController::class, 'index'])->name('labarugi.index');
+        Route::get('/laporan-labarugi/data/{awal}/{akhir}', [LaporanLabaRugiController::class, 'data'])->name('labarugi.data');
+        Route::get('/laporan-labarugi/pdf/{awal}/{akhir}', [LaporanLabaRugiController::class, 'exportPDF'])->name('labarugi.export_pdf');
+
+        Route::get('/laporan-pembelian', [LaporanPembelianController::class, 'index'])->name('laporan-pembelian.index');
+        Route::get('/laporan-pembelian/data/{awal}/{akhir}', [LaporanPembelianController::class, 'data'])->name('pembeliantotal.data');
 
         Route::get('/user/data', [UserController::class, 'data'])->name('user.data');
         Route::resource('/user', UserController::class);
@@ -94,6 +102,7 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('/setting', [SettingController::class, 'index'])->name('setting.index');
         Route::get('/setting/first', [SettingController::class, 'show'])->name('setting.show');
         Route::post('/setting', [SettingController::class, 'update'])->name('setting.update');
+
     });
  
     Route::group(['middleware' => 'level:1,2'], function () {
