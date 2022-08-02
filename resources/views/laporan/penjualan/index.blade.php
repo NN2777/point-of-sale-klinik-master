@@ -1,7 +1,7 @@
 @extends('layouts.master')
 
 @section('title')
-    Laporan Pendapatan {{ tanggal_indonesia($tanggalAwal, false) }} s/d {{ tanggal_indonesia($tanggalAkhir, false) }}
+    Laporan Penjualan {{ tanggal_indonesia($tanggalAwal, false) }} s/d {{ tanggal_indonesia($tanggalAkhir, false) }}
 @endsection
 
 @push('css')
@@ -19,19 +19,19 @@
         <div class="box">
             <div class="box-header with-border">
                 <button onclick="updatePeriode()" class="btn btn-info btn-xs btn-flat"><i class="fa fa-plus-circle"></i> Ubah Periode</button>
-                <a href="{{ route('pembeliantotal.export_pdf', [$tanggalAwal, $tanggalAkhir]) }}" target="_blank" class="btn btn-success btn-xs btn-flat"><i class="fa fa-file-excel-o"></i> Export PDF</a>
+                <a href="{{ route('penjualantotal.export_pdf', [$tanggalAwal, $tanggalAkhir]) }}" target="_blank" class="btn btn-success btn-xs btn-flat"><i class="fa fa-file-excel-o"></i> Export PDF</a>
             </div>
             <div class="box-body table-responsive">
                 <table class="table table-stiped table-bordered">
                     <thead>
                         <th width="5%">No</th>
                         <th>Tanggal</th>
-                        <th>Supplier</th>
+                        <th>Member</th>
                         <th>Total Harga</th>
                         <th>Diskon</th>
                         <th>PPN</th>
                         <th>Total Bayar</th>
-                        <th>Cara Bayar</th>
+                        <th>Cara Pembayaran</th>
                         <th>Jatuh Tempo</th>
                     </thead>
                 </table>
@@ -40,7 +40,7 @@
     </div>
 </div>
 
-@includeIf('laporan.pembelian.form')
+@includeIf('laporan.penjualan.form')
 @endsection
 
 @push('scripts')
@@ -55,12 +55,12 @@
             serverSide: true,
             autoWidth: false,
             ajax: {
-                url: '{{ route("pembeliantotal.data", [$tanggalAwal, $tanggalAkhir]) }}',
+                url: '{{ route("penjualantotal.data", [$tanggalAwal, $tanggalAkhir]) }}',
             },
             columns: [
                 {data: 'DT_RowIndex', searchable: false, sortable: false},
                 {data: 'tanggal'},
-                {data: 'supplier'},
+                {data: 'member'},
                 {data: 'total_harga'},
                 {data: 'diskon'},
                 {data: 'ppn'},

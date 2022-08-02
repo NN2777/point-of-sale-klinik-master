@@ -22,7 +22,7 @@
                     <li class="list-group-item">Laporan Pembelian Tunai</li>
                     <li class="list-group-item">Laporan Pembelian Kredit</li>
                     <li class="list-group-item"><a href="{{ route('laporan-pembelian.index') }}">Laporan Pembelian Total</a></li>
-                    <li class="list-group-item">Laporan Penjualan</li>
+                    <li class="list-group-item"><a href="{{ route('laporan-penjualan.index') }}">Laporan Penjualan Total</a></li>
                     <li class="list-group-item">Laporan Persediaan</li>
                     <li class="list-group-item">Laporan Laba Rugi</li>
                     <li class="list-group-item">Laporan Hutang Piutang</li>

@@ -5,12 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Laporan Pendapatan</title>
+
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
-    
 </head>
 <body>
-    <h3 style="text-align:center">Laporan Pendapatan</h3>
-    <h4 style="text-align:center">
+    <h3 class="text-center">Laporan Pendapatan</h3>
+    <h4 class="text-center">
         Tanggal {{ tanggal_indonesia($awal, false) }}
         s/d
         Tanggal {{ tanggal_indonesia($akhir, false) }}

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Pembelian;
+use PDF;
 
 class LaporanPembelianController extends Controller
 {
@@ -27,35 +28,87 @@ class LaporanPembelianController extends Controller
         return view('laporan.pembelian.index', compact('tanggalAwal', 'tanggalAkhir'));
     }
 
-    public function data($awal, $akhir)
+    public function getData($awal, $akhir)
     {
         $pembelian = Pembelian::orderBy('id_pembelian', 'desc')->whereBetween('created_at', [$awal, $akhir])->get();
 
-        // dd($pembelian);
-        
-        return datatables()
-            ->of($pembelian)
-            ->addIndexColumn()
+        $data = array();
+        $total_pembelian = 0;
+        $total_harga = 0;
+        $total_diskon = 0;
+        $total_ppn = 0;
 
-            ->addColumn('total_harga', function ($pembelian) {
-                return 'Rp. ' . format_uang($pembelian->total_harga);
-            })
-            ->addColumn('bayar', function ($pembelian) {
-                return 'Rp. ' . format_uang($pembelian->bayar);
-            })
-            ->addColumn('tanggal', function ($pembelian) {
-                return tanggal_indonesia($pembelian->created_at, false);
-            })
-            ->addColumn('supplier', function ($pembelian) {
-                return $pembelian->supplier->nama;
-            })
-            ->editColumn('diskon', function ($pembelian) {
-                return $pembelian->diskon . '%';
-            })
-            ->editColumn('ppn', function ($pembelian) {
-                return $pembelian->ppn . '%';
-            })
+        $no = 0;
+        foreach ($pembelian as $beli) {
+            $total_pembelian += $beli->bayar;
+            $total_harga += $beli->total_harga;
+            $total_diskon += $beli->diskon * ($beli->total_harga) / 100;
+            $total_ppn += $beli->ppn * ($beli->total_harga) / 100;
+            $row = array();
+            $row['DT_RowIndex'] = ++$no;
+            $row['tanggal'] = tanggal_indonesia($beli->created_at, false);
+            $row['supplier'] = $beli->supplier->nama;
+            $row['total_harga'] =  'Rp.' . format_uang($beli->total_harga);
+            $row['diskon'] = 'Rp.' . format_uang($beli->diskon * ($beli->total_harga) / 100);
+            $row['ppn'] = 'Rp.' . format_uang($beli->ppn * ($beli->total_harga) / 100);
+            $row['total_bayar'] = 'Rp.' . format_uang($beli->bayar);
+            $row['status'] = $beli->status;
+            $row['jatuh_tempo'] = $beli->jatuh_tempo;
+
+            $data[] = $row;
+        }
+
+        $data[] = [
+            'DT_RowIndex' => '',
+            'tanggal' => '',
+            'supplier' => 'Total',
+            'total_harga' => 'Rp.' . format_uang($total_pembelian),
+            'diskon' => 'Rp.' . format_uang($total_diskon),
+            'ppn' => 'Rp.' . format_uang($total_ppn),
+            'status' => '',
+            'total_bayar' => 'Rp.' . format_uang($total_pembelian),
+            'jatuh_tempo' => '',
+        ];
+        // dd($pembelian);
+        return $data;
+    }
+
+    public function data($awal, $akhir)
+    {
+        $data = $this->getData($awal, $akhir);
+
+        return datatables()
+            ->of($data)
             ->make(true);
+        // return datatables()
+        //     ->of($pembelian)
+        //     ->addIndexColumn()
+
+        //     ->addColumn('total_harga', function ($pembelian) {
+        //         return 'Rp. ' . format_uang($pembelian->total_harga);
+        //     })
+        //     ->addColumn('bayar', function ($pembelian) {
+        //         return 'Rp. ' . format_uang($pembelian->bayar);
+        //     })
+        //     ->addColumn('tanggal', function ($pembelian) {
+        //         return tanggal_indonesia($pembelian->created_at, false);
+        //     })
+        //     ->addColumn('supplier', function ($pembelian) {
+        //         return $pembelian->supplier->nama;
+        //     })
+        //     ->editColumn('diskon', function ($pembelian) {
+        //         return $pembelian->diskon . '%';
+        //     })
+        //     ->editColumn('ppn', function ($pembelian) {
+        //         return $pembelian->ppn . '%';
+        //     })
+        //     ->editColumn('status', function ($pembelian) {
+        //         return $pembelian->status;
+        //     })
+        //     ->editColumn('jatuh_tempo', function ($pembelian) {
+        //         return $pembelian->jatuh_tempo ;
+        //     })
+        //     ->make(true);
     }
     /**
      * Show the form for creating a new resource.
@@ -121,5 +174,14 @@ class LaporanPembelianController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    public function exportPDF($awal, $akhir)
+    {
+        $data = $this->getData($awal, $akhir);
+        $pdf  = PDF::loadView('laporan.pembelian.pdf', compact('awal', 'akhir', 'data'));
+        $pdf->setPaper('a4', 'potrait');
+
+        return $pdf->stream('Laporan-pembelian-' . date('Y-m-d-his') . '.pdf');
     }
 }
