@@ -7,6 +7,7 @@ use App\Http\Controllers\{
     LaporanPenjualanController,
     LaporanLabaRugiController,
     LaporanPembelianController,
+    LaporanPersediaanController,
     ProdukController,
     MemberController,
     PengeluaranController,
@@ -100,6 +101,10 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('/laporan-penjualan', [LaporanPenjualanController::class, 'index'])->name('laporan-penjualan.index');
         Route::get('/laporan-penjualan/data/{awal}/{akhir}', [LaporanPenjualanController::class, 'data'])->name('penjualantotal.data');
         Route::get('/laporan-penjualan/pdf/{awal}/{akhir}', [LaporanPenjualanController::class, 'exportPDF'])->name('penjualantotal.export_pdf');
+
+        Route::get('/laporan-persediaan', [LaporanPersediaanController::class, 'index'])->name('laporan-persediaan.index');
+        Route::get('/laporan-persediaan/data/{tanggal}', [LaporanPersediaanController::class, 'data'])->name('persediaan.data');
+        Route::get('/laporan-persediaan/pdf/{tanggal}', [LaporanPersediaanController::class, 'exportPDF'])->name('persediaan.export_pdf');
 
         Route::get('/user/data', [UserController::class, 'data'])->name('user.data');
         Route::resource('/user', UserController::class);

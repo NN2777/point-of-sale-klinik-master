@@ -13,7 +13,7 @@ class LaporanPembelianController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request)
+    public function index(Request $request, $id)
     {
         $tanggalAwal = date('Y-m-d', mktime(0, 0, 0, date('m'), 1, date('Y')));
         $tanggalAkhir = date('Y-m-d');
@@ -24,8 +24,14 @@ class LaporanPembelianController extends Controller
         }
 
         // dd($tanggalAwal, $tanggalAkhir);
-
         return view('laporan.pembelian.index', compact('tanggalAwal', 'tanggalAkhir'));
+        // if($id == 'total'){
+        //     return view('laporan.pembelian.index', compact('tanggalAwal', 'tanggalAkhir'));
+        // } else if($id == 'tunai'){
+        //     return view('laporan.pembelian.tunai', compact('tanggalAwal', 'tanggalAkhir'));
+        // } else if($id == 'kredit'){
+        //     return view('laporan.pembelian.kredit', compact('tanggalAwal', 'tanggalAkhir'));
+        // }
     }
 
     public function getData($awal, $akhir)
