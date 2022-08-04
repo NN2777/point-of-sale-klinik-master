@@ -19,9 +19,11 @@
             </div>
             <div class="box-body">
                 <ul class="list-group">
-                    <li class="list-group-item">Laporan Pembelian Tunai</li>
-                    <li class="list-group-item">Laporan Pembelian Kredit</li>
-                    <li class="list-group-item"><a href="{{ route('laporan-pembelian.index', 'total') }}">Laporan Pembelian Total</a></li>
+                    <li class="list-group-item"><a href="{{ route('laporan-pembelian-tunai.index') }}">Laporan Pembelian Tunai</a></li>
+                    <li class="list-group-item"><a href="{{ route('laporan-pembelian-kredit.index') }}">Laporan Pembelian Kredit</a></li>
+                    <li class="list-group-item"><a href="{{ route('laporan-pembelian.index') }}">Laporan Pembelian Total</a></li>
+                    <li class="list-group-item"><a href="{{ route('laporan-penjualan-tunai.index') }}">Laporan Penjualan Tunai</a></li>
+                    <li class="list-group-item"><a href="{{ route('laporan-penjualan-kredit.index') }}">Laporan Penjualan Kredit</a></li>
                     <li class="list-group-item"><a href="{{ route('laporan-penjualan.index') }}">Laporan Penjualan Total</a></li>
                     <li class="list-group-item"><a href="{{ route('laporan-persediaan.index') }}">Laporan Persediaan</a></li>
                     <li class="list-group-item">Laporan Laba Rugi</li>

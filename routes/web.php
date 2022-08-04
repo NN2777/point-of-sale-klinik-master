@@ -94,14 +94,33 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('/laporan-labarugi/data/{awal}/{akhir}', [LaporanLabaRugiController::class, 'data'])->name('labarugi.data');
         Route::get('/laporan-labarugi/pdf/{awal}/{akhir}', [LaporanLabaRugiController::class, 'exportPDF'])->name('labarugi.export_pdf');
 
+        /* laporan pembelian total, kredit, tunai */
         Route::get('/laporan-pembelian', [LaporanPembelianController::class, 'index'])->name('laporan-pembelian.index');
         Route::get('/laporan-pembelian/data/{awal}/{akhir}', [LaporanPembelianController::class, 'data'])->name('pembeliantotal.data');
         Route::get('/laporan-pembelian/pdf/{awal}/{akhir}', [LaporanPembelianController::class, 'exportPDF'])->name('pembeliantotal.export_pdf');
 
+        Route::get('/laporan-pembelian-tunai', [LaporanPembelianController::class, 'indexTunai'])->name('laporan-pembelian-tunai.index');
+        Route::get('/laporan-pembelian-tunai/data/{awal}/{akhir}', [LaporanPembelianController::class, 'dataTunai'])->name('pembeliantunai.data');
+        Route::get('/laporan-pembelian-tunai/pdf/{awal}/{akhir}', [LaporanPembelianController::class, 'exportTunaiPDF'])->name('pembeliantunai.export_pdf');
+
+        Route::get('/laporan-pembelian-kredit', [LaporanPembelianController::class, 'indexKredit'])->name('laporan-pembelian-kredit.index');
+        Route::get('/laporan-pembelian-kredit/data/{awal}/{akhir}', [LaporanPembelianController::class, 'dataKredit'])->name('pembeliankredit.data');
+        Route::get('/laporan-pembelian-kredit/pdf/{awal}/{akhir}', [LaporanPembelianController::class, 'exportKreditPDF'])->name('pembeliankredit.export_pdf');
+
+         /* laporan penjualan total, kredit, tunai */
         Route::get('/laporan-penjualan', [LaporanPenjualanController::class, 'index'])->name('laporan-penjualan.index');
         Route::get('/laporan-penjualan/data/{awal}/{akhir}', [LaporanPenjualanController::class, 'data'])->name('penjualantotal.data');
         Route::get('/laporan-penjualan/pdf/{awal}/{akhir}', [LaporanPenjualanController::class, 'exportPDF'])->name('penjualantotal.export_pdf');
 
+        Route::get('/laporan-penjualan-tunai', [LaporanPenjualanController::class, 'indexTunai'])->name('laporan-penjualan-tunai.index');
+        Route::get('/laporan-penjualan-tunai/data/{awal}/{akhir}', [LaporanPenjualanController::class, 'dataTunai'])->name('penjualantunai.data');
+        Route::get('/laporan-penjualan-tunai/pdf/{awal}/{akhir}', [LaporanPenjualanController::class, 'exportTunaiPDF'])->name('penjualantunai.export_pdf');
+
+        Route::get('/laporan-penjualan-kredit', [LaporanPenjualanController::class, 'indexKredit'])->name('laporan-penjualan-kredit.index');
+        Route::get('/laporan-penjualan-kredit/data/{awal}/{akhir}', [LaporanPenjualanController::class, 'dataKredit'])->name('penjualankredit.data');
+        Route::get('/laporan-penjualan-kredit/pdf/{awal}/{akhir}', [LaporanPenjualanController::class, 'exportKreditPDF'])->name('penjualankredit.export_pdf');
+
+        /*laporan persediaan*/
         Route::get('/laporan-persediaan', [LaporanPersediaanController::class, 'index'])->name('laporan-persediaan.index');
         Route::get('/laporan-persediaan/data/{tanggal}', [LaporanPersediaanController::class, 'data'])->name('persediaan.data');
         Route::get('/laporan-persediaan/pdf/{tanggal}', [LaporanPersediaanController::class, 'exportPDF'])->name('persediaan.export_pdf');

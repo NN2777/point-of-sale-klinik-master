@@ -21,10 +21,13 @@
             <tr>
                 <th width="5%">No</th>
                 <th>Tanggal</th>
-                <th>Penjualan</th>
-                <th>Pembelian</th>
-                <th>Pengeluaran</th>
-                <th>Pendapatan</th>
+                <th>Supplier</th>
+                <th>Total Harga</th>
+                <th>Diskon</th>
+                <th>PPN</th>
+                <th>Total Bayar</th>
+                <th>Cara Bayar</th>
+                <th>Jatuh Tempo</th>
             </tr>
         </thead>
         <tbody>

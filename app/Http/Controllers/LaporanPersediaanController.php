@@ -32,8 +32,8 @@ class LaporanPersediaanController extends Controller
             $row['kode'] = $barang->kode_produk;
             $row['nama_obat'] = $barang->nama_produk;
             $row['stok'] =  $barang->stok;
-            $row['harga_pokok'] = 'Rp.' . format_uang($barang->harga_beli);
-            $row['nilai_persediaan'] = 'Rp.' . format_uang($barang->harga_beli * $barang->stok);
+            $row['harga_pokok'] = 'Rp. ' . format_uang($barang->harga_beli);
+            $row['nilai_persediaan'] = 'Rp. ' . format_uang($barang->harga_beli * $barang->stok);
             $data[] = $row;
         }
 
@@ -43,7 +43,7 @@ class LaporanPersediaanController extends Controller
             'nama_obat' => '',
             'stok' => '',
             'harga_pokok' => 'Total',
-            'nilai_persediaan' => 'Rp.' . format_uang($total_persediaan),
+            'nilai_persediaan' => 'Rp. ' . format_uang($total_persediaan),
         ];
         // dd($data);
         return $data;
