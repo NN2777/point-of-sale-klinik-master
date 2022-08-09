@@ -253,6 +253,14 @@ Transaksi Pembelian
             loadForm($('#diskon').val(), $('#ppn').val());
 
         });
+        
+        $('#ppn').on('input', function() {
+            if ($(this).val() == "") {
+                $(this).val(0).select();
+            }
+
+            loadForm($('#diskon').val(), $(this).val());
+        })
 
         // $(document).on('input', '#diskon', function () {
         //     if ($(this).val() == "") {

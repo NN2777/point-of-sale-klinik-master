@@ -19,8 +19,11 @@ class BuatPenjualanTable extends Migration
             $table->integer('total_item');
             $table->integer('total_harga');
             $table->tinyInteger('diskon')->default(0);
+            $table->tinyInteger('ppn')->default(0);
             $table->integer('bayar')->default(0);
             $table->integer('diterima')->default(0);
+            $table->string('status');
+            $table->date('jatuh_tempo');
             $table->integer('id_user');
             $table->timestamps();
         });

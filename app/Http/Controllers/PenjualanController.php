@@ -72,6 +72,7 @@ class PenjualanController extends Controller
         $penjualan->diskon = 0;
         $penjualan->ppn = 0;
         $penjualan->status = "";
+        $penjualan->jatuh_tempo = date('Y-m-d');
         $penjualan->bayar = 0;
         $penjualan->diterima = 0;
         $penjualan->id_user = auth()->id();

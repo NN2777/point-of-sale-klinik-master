@@ -183,7 +183,7 @@ class LaporanPembelianController extends Controller
     }
 
 
-    /** =================ngambil data tunai + return data tunai + export data tunai====================== */
+    /** =================ngambil data kredit + return data kredit + export data kredit====================== */
     public function indexKredit(Request $request)
     {
         $tanggalAwal = date('Y-m-d', mktime(0, 0, 0, date('m'), 1, date('Y')));
@@ -243,6 +243,73 @@ class LaporanPembelianController extends Controller
     }
 
     public function dataKredit($awal, $akhir)
+    {
+        $data = $this->getDataKredit($awal, $akhir);
+        return datatables()
+            ->of($data)
+            ->make(true);
+    }
+
+    /** =================ngambil data tunai + return data tunai + export data tunai====================== */
+    public function indexNota(Request $request)
+    {
+        $tanggalAwal = date('Y-m-d', mktime(0, 0, 0, date('m'), 1, date('Y')));
+        $tanggalAkhir = date('Y-m-d');
+
+        if ($request->has('tanggal_awal') && $request->tanggal_awal != "" && $request->has('tanggal_akhir') && $request->tanggal_akhir) {
+            $tanggalAwal = $request->tanggal_awal;
+            $tanggalAkhir = $request->tanggal_akhir;
+        }
+
+        return view('laporan.pembelian.nota', compact('tanggalAwal', 'tanggalAkhir'));
+    }
+
+    public function getDataNota($awal, $akhir)
+    {
+        $pembelian = Pembelian::orderBy('id_pembelian', 'desc')->whereBetween('created_at', [$awal, $akhir])->get();
+
+        $data = array();
+        $total_pembelian = 0;
+        $total_harga = 0;
+        $total_diskon = 0;
+        $total_ppn = 0;
+
+        $no = 0;
+        foreach ($pembelian as $beli) {
+            $total_pembelian += $beli->bayar;
+            $total_harga += $beli->total_harga;
+            $total_diskon += $beli->diskon * ($beli->total_harga) / 100;
+            $total_ppn += $beli->ppn * ($beli->total_harga) / 100;
+            $row = array();
+            $row['DT_RowIndex'] = ++$no;
+            $row['tanggal'] = tanggal_indonesia($beli->created_at, false);
+            $row['supplier'] = $beli->supplier->nama;
+            $row['total_harga'] =  'Rp.' . format_uang($beli->total_harga);
+            $row['diskon'] = 'Rp.' . format_uang($beli->diskon * ($beli->total_harga) / 100);
+            $row['ppn'] = 'Rp.' . format_uang($beli->ppn * ($beli->total_harga) / 100);
+            $row['total_bayar'] = 'Rp.' . format_uang($beli->bayar);
+            $row['status'] = $beli->status;
+            $row['jatuh_tempo'] = $beli->jatuh_tempo;
+
+            $data[] = $row;
+        }
+
+        $data[] = [
+            'DT_RowIndex' => '',
+            'tanggal' => '',
+            'supplier' => 'Total',
+            'total_harga' => 'Rp.' . format_uang($total_harga),
+            'diskon' => 'Rp.' . format_uang($total_diskon),
+            'ppn' => 'Rp.' . format_uang($total_ppn),
+            'total_bayar' => 'Rp.' . format_uang($total_pembelian),
+            'status' => '',
+            'jatuh_tempo' => '',
+        ];
+        // dd($pembelian);
+        return $data;
+    }
+
+    public function dataNota($awal, $akhir)
     {
         $data = $this->getDataKredit($awal, $akhir);
         return datatables()

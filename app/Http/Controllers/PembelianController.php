@@ -67,6 +67,8 @@ class PembelianController extends Controller
         $pembelian->diskon      = 0;
         $pembelian->status      = "tunai";
         $pembelian->bayar       = 0;
+        $pembelian->jatuh_tempo = date('Y-m-d');
+        $pembelian->tanggal     = date('Y-m-d');
         $pembelian->save();
 
         session(['id_pembelian' => $pembelian->id_pembelian]);
@@ -140,4 +142,30 @@ class PembelianController extends Controller
 
         return response(null, 204);
     }
+
+    // public function import_excel(Request $request) 
+	// {
+	// 	// validasi
+	// 	$this->validate($request, [
+	// 		'file' => 'required|mimes:csv,xls,xlsx'
+	// 	]);
+ 
+	// 	// menangkap file excel
+	// 	$file = $request->file('file');
+ 
+	// 	// membuat nama file unik
+	// 	$nama_file = rand().$file->getClientOriginalName();
+ 
+	// 	// upload ke folder file_siswa di dalam folder public
+	// 	$file->move('file_siswa',$nama_file);
+ 
+	// 	// import data
+	// 	Excel::import(new PembelianImport, public_path('/file_siswa/'.$nama_file));
+ 
+	// 	// notifikasi dengan session
+	// 	Session::flash('sukses','Data Siswa Berhasil Diimport!');
+ 
+	// 	// alihkan halaman kembali
+	// 	return redirect('pembelian.index');
+	// }
 }
