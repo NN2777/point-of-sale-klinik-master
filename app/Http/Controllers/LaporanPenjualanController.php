@@ -25,7 +25,7 @@ class LaporanPenjualanController extends Controller
 
     public function getData($awal, $akhir)
     {
-        $penjualan = Penjualan::with('member')->orderBy('id_penjualan', 'desc')->whereBetween('created_at', [$awal, $akhir])->get();
+        $penjualan = Penjualan::with('member')->orderBy('id_penjualan', 'desc')->whereBetween('tanggal', [$awal, $akhir])->get();
 
         // dd($pembelian);
         
@@ -44,7 +44,7 @@ class LaporanPenjualanController extends Controller
             $total_ppn += $jual->ppn * ($jual->total_harga)/100;
             $row = array();
             $row['DT_RowIndex'] = ++$no;
-            $row['tanggal'] = tanggal_indonesia($jual->created_at, false);
+            $row['tanggal'] = tanggal_indonesia($jual->tanggal, false);
             $row['member'] = $jual->member->nama ?? '';
             $row['total_harga'] =  'Rp.' . format_uang($jual->total_harga);
             $row['diskon'] = 'Rp.' . format_uang($jual->diskon * ($jual->total_harga)/100);
@@ -108,7 +108,7 @@ class LaporanPenjualanController extends Controller
 
     public function getDataTunai($awal, $akhir)
     {
-        $penjualan = Penjualan::where('status', 'tunai')->with('member')->orderBy('id_penjualan', 'desc')->whereBetween('created_at', [$awal, $akhir])->get();
+        $penjualan = Penjualan::where('status', 'tunai')->with('member')->orderBy('id_penjualan', 'desc')->whereBetween('tanggal', [$awal, $akhir])->get();
 
         // dd($pembelian);
         
@@ -127,7 +127,7 @@ class LaporanPenjualanController extends Controller
             $total_ppn += $jual->ppn * ($jual->total_harga)/100;
             $row = array();
             $row['DT_RowIndex'] = ++$no;
-            $row['tanggal'] = tanggal_indonesia($jual->created_at, false);
+            $row['tanggal'] = tanggal_indonesia($jual->tanggal, false);
             $row['member'] = $jual->member->nama ?? '';
             $row['total_harga'] =  'Rp.' . format_uang($jual->total_harga);
             $row['diskon'] = 'Rp.' . format_uang($jual->diskon * ($jual->total_harga)/100);
@@ -191,7 +191,7 @@ class LaporanPenjualanController extends Controller
 
     public function getDataKredit($awal, $akhir)
     {
-        $penjualan = Penjualan::where('status', 'kredit')->with('member')->orderBy('id_penjualan', 'desc')->whereBetween('created_at', [$awal, $akhir])->get();
+        $penjualan = Penjualan::where('status', 'kredit')->with('member')->orderBy('id_penjualan', 'desc')->whereBetween('tanggal', [$awal, $akhir])->get();
 
         // dd($pembelian);
         
@@ -210,7 +210,7 @@ class LaporanPenjualanController extends Controller
             $total_ppn += $jual->ppn * ($jual->total_harga)/100;
             $row = array();
             $row['DT_RowIndex'] = ++$no;
-            $row['tanggal'] = tanggal_indonesia($jual->created_at, false);
+            $row['tanggal'] = tanggal_indonesia($jual->tanggal, false);
             $row['member'] = $jual->member->nama ?? '';
             $row['total_harga'] =  'Rp.' . format_uang($jual->total_harga);
             $row['diskon'] = 'Rp.' . format_uang($jual->diskon * ($jual->total_harga)/100);

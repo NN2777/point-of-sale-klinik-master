@@ -5,6 +5,7 @@ Transaksi Penjualan
 @endsection
 
 @push('css')
+<link rel="stylesheet" href="{{ asset('/AdminLTE-2/bower_components/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css') }}">
 <style>
     .tampil-bayar {
         font-size: 5em;
@@ -33,7 +34,7 @@ Transaksi Penjualan
 
 @section('breadcrumb')
 @parent
-<li class="active">Transaksi Penjaualn</li>
+<li class="active">Transaksi Penjualan</li>
 @endsection
 
 @section('content')
@@ -86,6 +87,12 @@ Transaksi Penjualan
                             <input type="hidden" name="bayar" id="bayar">
                             <input type="hidden" name="id_member" id="id_member" value="{{ $memberSelected->id_member }}">
 
+                            <div class="form-group row">
+                                <label for="tanggal" class="col-lg-2 control-label">Tanggal</label>
+                                <div class="col-lg-8">
+                                    <input type="text" name="tanggal" id="tanggal" class="form-control datepicker" value="{{ date('Y-m-d') }}">
+                                </div>
+                            </div>
                             <div class="form-group row">
                                 <label for="totalrp" class="col-lg-2 control-label">Total</label>
                                 <div class="col-lg-8">
@@ -164,6 +171,7 @@ Transaksi Penjualan
 @endsection
 
 @push('scripts')
+<script src="{{ asset('/AdminLTE-2/bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js') }}"></script>
 <script>
     let table, table2;
 
@@ -248,6 +256,11 @@ Transaksi Penjualan
                     alert('Tidak dapat menyimpan data');
                     return;
                 });
+        });
+
+        $('.datepicker').datepicker({
+            format: 'yyyy-mm-dd',
+            autoclose: true
         });
 
         $(document).on('input', '#diskon', function() {

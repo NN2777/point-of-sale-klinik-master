@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Pembelian;
+use App\Models\PembelianDetail;
 use PDF;
 
 class LaporanPembelianController extends Controller
@@ -28,7 +29,7 @@ class LaporanPembelianController extends Controller
 
     public function getData($awal, $akhir)
     {
-        $pembelian = Pembelian::orderBy('id_pembelian', 'desc')->whereBetween('created_at', [$awal, $akhir])->get();
+        $pembelian = Pembelian::orderBy('id_pembelian', 'desc')->whereBetween('tanggal', [$awal, $akhir])->get();
 
         $data = array();
         $total_pembelian = 0;
@@ -44,7 +45,7 @@ class LaporanPembelianController extends Controller
             $total_ppn += $beli->ppn * ($beli->total_harga) / 100;
             $row = array();
             $row['DT_RowIndex'] = ++$no;
-            $row['tanggal'] = tanggal_indonesia($beli->created_at, false);
+            $row['tanggal'] = tanggal_indonesia($beli->tanggal, false);
             $row['supplier'] = $beli->supplier->nama;
             $row['total_harga'] =  'Rp.' . format_uang($beli->total_harga);
             $row['diskon'] = 'Rp.' . format_uang($beli->diskon * ($beli->total_harga) / 100);
@@ -131,7 +132,7 @@ class LaporanPembelianController extends Controller
 
     public function getDataTunai($awal, $akhir)
     {
-        $pembelian = Pembelian::where('status', 'tunai')->orderBy('id_pembelian', 'desc')->whereBetween('created_at', [$awal, $akhir])->get();
+        $pembelian = Pembelian::where('status', 'tunai')->orderBy('id_pembelian', 'desc')->whereBetween('tanggal', [$awal, $akhir])->get();
 
         $data = array();
         $total_pembelian = 0;
@@ -147,7 +148,7 @@ class LaporanPembelianController extends Controller
             $total_ppn += $beli->ppn * ($beli->total_harga) / 100;
             $row = array();
             $row['DT_RowIndex'] = ++$no;
-            $row['tanggal'] = tanggal_indonesia($beli->created_at, false);
+            $row['tanggal'] = tanggal_indonesia($beli->tanggal, false);
             $row['supplier'] = $beli->supplier->nama;
             $row['total_harga'] =  'Rp.' . format_uang($beli->total_harga);
             $row['diskon'] = 'Rp.' . format_uang($beli->diskon * ($beli->total_harga) / 100);
@@ -199,7 +200,7 @@ class LaporanPembelianController extends Controller
 
     public function getDataKredit($awal, $akhir)
     {
-        $pembelian = Pembelian::where('status', 'kredit')->orderBy('id_pembelian', 'desc')->whereBetween('created_at', [$awal, $akhir])->get();
+        $pembelian = Pembelian::where('status', 'kredit')->orderBy('id_pembelian', 'desc')->whereBetween('tanggal', [$awal, $akhir])->get();
 
         $data = array();
         $total_pembelian = 0;
@@ -215,7 +216,7 @@ class LaporanPembelianController extends Controller
             $total_ppn += $beli->ppn * ($beli->total_harga) / 100;
             $row = array();
             $row['DT_RowIndex'] = ++$no;
-            $row['tanggal'] = tanggal_indonesia($beli->created_at, false);
+            $row['tanggal'] = tanggal_indonesia($beli->tanggal, false);
             $row['supplier'] = $beli->supplier->nama;
             $row['total_harga'] =  'Rp.' . format_uang($beli->total_harga);
             $row['diskon'] = 'Rp.' . format_uang($beli->diskon * ($beli->total_harga) / 100);
@@ -266,117 +267,103 @@ class LaporanPembelianController extends Controller
 
     public function getDataNota($awal, $akhir)
     {
-        $pembelian = Pembelian::orderBy('id_pembelian', 'desc')->whereBetween('created_at', [$awal, $akhir])->get();
+        $pembelian = Pembelian::orderBy('id_pembelian', 'desc')->whereBetween('tanggal', [$awal, $akhir])->get();
 
         $data = array();
         $total_pembelian = 0;
-        $total_harga = 0;
-        $total_diskon = 0;
-        $total_ppn = 0;
 
-        $no = 0;
         foreach ($pembelian as $beli) {
             $total_pembelian += $beli->bayar;
-            $total_harga += $beli->total_harga;
-            $total_diskon += $beli->diskon * ($beli->total_harga) / 100;
-            $total_ppn += $beli->ppn * ($beli->total_harga) / 100;
             $row = array();
-            $row['DT_RowIndex'] = ++$no;
-            $row['tanggal'] = tanggal_indonesia($beli->created_at, false);
-            $row['supplier'] = $beli->supplier->nama;
-            $row['total_harga'] =  'Rp.' . format_uang($beli->total_harga);
-            $row['diskon'] = 'Rp.' . format_uang($beli->diskon * ($beli->total_harga) / 100);
-            $row['ppn'] = 'Rp.' . format_uang($beli->ppn * ($beli->total_harga) / 100);
-            $row['total_bayar'] = 'Rp.' . format_uang($beli->bayar);
-            $row['status'] = $beli->status;
-            $row['jatuh_tempo'] = $beli->jatuh_tempo;
+            $row['DT_RowIndex'] = "";
+            $row['nama_obat'] = "";
+            $row['no_batch'] = "";
+            $row['quantity'] = "";
+            $row['harga_satuan'] = "";
+            $row['diskon_item'] = "";
+            $row['total_bayar'] = "";
 
             $data[] = $row;
+
+            $data[] = [
+                'DT_RowIndex' => '',
+                'nama_obat' => 'Kode Nota: ' . $beli->id_pembelian,
+                'no_batch' =>  'Tanggal: ' .$beli->tanggal,
+                'quantity' => '',
+                'harga_satuan' => '',
+                'diskon_item' => '',
+                'total_bayar' => '',
+            ];
+
+            $produk= PembelianDetail::with('produk')->where('id_pembelian', $beli->id_pembelian)->get();
+            $total_pembelian_nota = 0;
+            $no = 0;
+            foreach($produk as $barang){
+                $total_pembelian_nota += $barang->subtotal - ($beli->diskon * ($beli->total_harga)) / 100 + ($beli->ppn * ($beli->total_harga) / 100);
+                $data[] = [
+                    'DT_RowIndex' => ++$no,
+                    'nama_obat' => $barang->produk->nama_produk,
+                    'no_batch' => '',
+                    'quantity' => $barang->jumlah,
+                    'harga_satuan' => format_uang($barang->harga_beli),
+                    'diskon_item' => $barang->produk->diskon,
+                    'total_bayar' => format_uang($barang->harga_beli * $barang->jumlah),
+                ];
+            }
+
+            $data[] = [
+                'DT_RowIndex' => '',
+                'nama_obat' => '',
+                'no_batch' => '',
+                'quantity' => '',
+                'harga_satuan' => '',
+                'diskon_item' => 'Diskon Nota Transaksi',
+                'total_bayar' => format_uang($beli->diskon * ($beli->total_harga) / 100),
+            ];
+
+            $data[] = [
+                'DT_RowIndex' => '',
+                'nama_obat' => '',
+                'no_batch' => '',
+                'quantity' => '',
+                'harga_satuan' => '',
+                'diskon_item' => 'PPN Nota Transaksi',
+                'total_bayar' =>  format_uang($beli->ppn * ($beli->total_harga) / 100),
+            ];
+
+            $data[] = [
+                'DT_RowIndex' => '',
+                'nama_obat' => '',
+                'no_batch' => '',
+                'quantity' => '',
+                'harga_satuan' => '',
+                'diskon_item' => 'Subtotal Nota',
+                'total_bayar' => format_uang($total_pembelian_nota),
+            ];
+            // dd($produk);
         }
 
         $data[] = [
             'DT_RowIndex' => '',
-            'tanggal' => '',
-            'supplier' => 'Total',
-            'total_harga' => 'Rp.' . format_uang($total_harga),
-            'diskon' => 'Rp.' . format_uang($total_diskon),
-            'ppn' => 'Rp.' . format_uang($total_ppn),
-            'total_bayar' => 'Rp.' . format_uang($total_pembelian),
-            'status' => '',
-            'jatuh_tempo' => '',
+            'nama_obat' => '',
+            'no_batch' => '',
+            'quantity' => '',
+            'harga_satuan' => '',
+            'diskon_item' => 'Grand Total',
+            'total_bayar' => format_uang($total_pembelian),
         ];
-        // dd($pembelian);
         return $data;
     }
 
     public function dataNota($awal, $akhir)
     {
-        $data = $this->getDataKredit($awal, $akhir);
+        $data = $this->getDataNota($awal, $akhir);
         return datatables()
             ->of($data)
             ->make(true);
     }
 
-    public function create()
-    {
-        //
-    }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
-    }
 
     public function exportPDF($awal, $akhir)
     {

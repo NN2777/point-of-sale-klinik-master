@@ -36,9 +36,9 @@ class LaporanLabaRugiController extends Controller
             $tanggal = $awal;
             $awal = date('Y-m-d', strtotime("+1 day", strtotime($awal)));
 
-            $total_penjualan = Penjualan::where('created_at', 'LIKE', "%$tanggal%")->sum('bayar');
-            $total_pembelian = Pembelian::where('created_at', 'LIKE', "%$tanggal%")->sum('bayar');
-            $total_pengeluaran = Pengeluaran::where('created_at', 'LIKE', "%$tanggal%")->sum('nominal');
+            $total_penjualan = Penjualan::where('tanggal', 'LIKE', "%$tanggal%")->sum('bayar');
+            $total_pembelian = Pembelian::where('tanggal', 'LIKE', "%$tanggal%")->sum('bayar');
+            $total_pengeluaran = Pengeluaran::where('tanggal', 'LIKE', "%$tanggal%")->sum('nominal');
 
             $pendapatan = $total_penjualan - $total_pembelian - $total_pengeluaran;
             $total_pendapatan += $pendapatan;

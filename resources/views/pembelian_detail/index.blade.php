@@ -102,6 +102,12 @@ Transaksi Pembelian
                             <input type="hidden" name="bayar" id="bayar">
 
                             <div class="form-group row">
+                                <label for="tanggal" class="col-lg-2 control-label">Tanggal</label>
+                                <div class="col-lg-8">
+                                    <input type="text" name="tanggal" id="tanggal" class="form-control datepicker" value="{{ date('Y-m-d') }}">
+                                </div>
+                            </div>
+                            <div class="form-group row">
                                 <label for="totalrp" class="col-lg-2 control-label">Total</label>
                                 <div class="col-lg-8">
                                     <input type="text" id="totalrp" class="form-control" readonly>
@@ -136,7 +142,7 @@ Transaksi Pembelian
                             <div class="form-group row">
                                 <label for="bayar" class="col-lg-2 control-label">Bayar</label>
                                 <div class="col-lg-8">
-                                    <input type="text" id="bayarrp" class="form-control">
+                                    <input type="text" id="bayarrp" class="form-control" readonly>
                                 </div>
                             </div>
                         </form>
@@ -245,9 +251,6 @@ Transaksi Pembelian
         $(document).on('input', '#diskon', '#ppn', function() {
             if ($('#diskon').val() == "") {
                 $('#diskon').val(0).select();
-            }
-            if ($('#ppn').val() == "") {
-                $('#ppn').val(0).select();
             }
 
             loadForm($('#diskon').val(), $('#ppn').val());

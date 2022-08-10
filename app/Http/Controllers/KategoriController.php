@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Kategori;
+use App\Imports\KategoriImport;
 
 class KategoriController extends Controller
 {
@@ -114,4 +115,9 @@ class KategoriController extends Controller
 
         return response(null, 204);
     }
+
+    // <!-- public function importKategori(Request $request)
+    // {
+
+    // } -->
 }

@@ -81,6 +81,10 @@
                 <td class="text-right"><b>{{ format_uang($penjualan->diskon) }}</b></td>
             </tr>
             <tr>
+                <td colspan="6" class="text-right"><b>PPN</b></td>
+                <td class="text-right"><b>{{ format_uang($penjualan->PPN) }}</b></td>
+            </tr>
+            <tr>
                 <td colspan="6" class="text-right"><b>Total Bayar</b></td>
                 <td class="text-right"><b>{{ format_uang($penjualan->bayar) }}</b></td>
             </tr>

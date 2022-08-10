@@ -42,6 +42,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::group(['middleware' => 'level:1'], function () {
         Route::get('/kategori/data', [KategoriController::class, 'data'])->name('kategori.data');
         Route::resource('/kategori', KategoriController::class);
+        Route::post('/kategori/import', [KategoriController::class, 'importKategori'])->name('kategori.import');
 
         Route::get('/produk/data', [ProdukController::class, 'data'])->name('produk.data');
         Route::post('/produk/delete-selected', [ProdukController::class, 'deleteSelected'])->name('produk.delete_selected');
@@ -102,6 +103,10 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('/laporan-pembelian-tunai', [LaporanPembelianController::class, 'indexTunai'])->name('laporan-pembelian-tunai.index');
         Route::get('/laporan-pembelian-tunai/data/{awal}/{akhir}', [LaporanPembelianController::class, 'dataTunai'])->name('pembeliantunai.data');
         Route::get('/laporan-pembelian-tunai/pdf/{awal}/{akhir}', [LaporanPembelianController::class, 'exportTunaiPDF'])->name('pembeliantunai.export_pdf');
+
+        Route::get('/laporan-pembelian-nota', [LaporanPembelianController::class, 'indexNota'])->name('laporan-pembelian-nota.index');
+        Route::get('/laporan-pembelian-nota/data/{awal}/{akhir}', [LaporanPembelianController::class, 'dataNota'])->name('pembeliannota.data');
+        Route::get('/laporan-pembelian-nota/pdf/{awal}/{akhir}', [LaporanPembelianController::class, 'exportNotaPDF'])->name('pembeliannota.export_pdf');
 
         Route::get('/laporan-pembelian-kredit', [LaporanPembelianController::class, 'indexKredit'])->name('laporan-pembelian-kredit.index');
         Route::get('/laporan-pembelian-kredit/data/{awal}/{akhir}', [LaporanPembelianController::class, 'dataKredit'])->name('pembeliankredit.data');

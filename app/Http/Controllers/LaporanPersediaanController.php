@@ -20,6 +20,7 @@ class LaporanPersediaanController extends Controller
         $produk = Produk::orderBy('id_produk', 'desc')->get();
 
         // dd($pembelian);
+        $total_nilai_persediaan = 0;
         $total_persediaan = 0;
         $data = array();
         
@@ -27,6 +28,7 @@ class LaporanPersediaanController extends Controller
         $no = 0;
         foreach ($produk as $barang) {
             $total_persediaan += $barang->harga_beli;
+            $total_nilai_persediaan += $barang->harga_beli * $barang->stok;
             $row = array();
             $row['DT_RowIndex'] = ++$no;
             $row['kode'] = $barang->kode_produk;
@@ -41,9 +43,9 @@ class LaporanPersediaanController extends Controller
             'DT_RowIndex' => '',
             'kode' => '',
             'nama_obat' => '',
-            'stok' => '',
-            'harga_pokok' => 'Total',
-            'nilai_persediaan' => 'Rp. ' . format_uang($total_persediaan),
+            'stok' => 'Total',
+            'harga_pokok' => 'Rp. ' . format_uang($total_persediaan),
+            'nilai_persediaan' => 'Rp. ' . format_uang($total_nilai_persediaan),
         ];
         // dd($data);
         return $data;

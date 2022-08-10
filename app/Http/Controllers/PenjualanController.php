@@ -33,7 +33,7 @@ class PenjualanController extends Controller
                 return 'Rp. '. format_uang($penjualan->bayar);
             })
             ->addColumn('tanggal', function ($penjualan) {
-                return tanggal_indonesia($penjualan->created_at, false);
+                return tanggal_indonesia($penjualan->tanggal, false);
             })
             ->addColumn('kode_member', function ($penjualan) {
                 $member = $penjualan->member->kode_member ?? '';
@@ -73,6 +73,7 @@ class PenjualanController extends Controller
         $penjualan->ppn = 0;
         $penjualan->status = "";
         $penjualan->jatuh_tempo = date('Y-m-d');
+        $penjualan->tanggal = date('Y-m-d');
         $penjualan->bayar = 0;
         $penjualan->diterima = 0;
         $penjualan->id_user = auth()->id();
@@ -92,6 +93,7 @@ class PenjualanController extends Controller
         $penjualan->ppn = $request->ppn;
         $penjualan->status = $request->status;
         $penjualan->jatuh_tempo = $request->jatuh_tempo;
+        $penjualan->tanggal = $request->tanggal;
         $penjualan->bayar = $request->bayar;
         $penjualan->diterima = $request->diterima;
         $penjualan->update();

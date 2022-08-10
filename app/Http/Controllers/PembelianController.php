@@ -34,7 +34,7 @@ class PembelianController extends Controller
                 return 'Rp. '. format_uang($pembelian->bayar);
             })
             ->addColumn('tanggal', function ($pembelian) {
-                return tanggal_indonesia($pembelian->created_at, false);
+                return tanggal_indonesia($pembelian->tanggal, false);
             })
             ->addColumn('supplier', function ($pembelian) {
                 return $pembelian->supplier->nama;
@@ -87,6 +87,7 @@ class PembelianController extends Controller
         $pembelian->status = $request->status;
         $pembelian->jatuh_tempo = $request->jatuh_tempo;
         $pembelian->bayar = $request->bayar;
+        $pembelian->tanggal = $request->tanggal;
         $pembelian->update();
 
         $detail = PembelianDetail::where('id_pembelian', $pembelian->id_pembelian)->get();
@@ -142,6 +143,7 @@ class PembelianController extends Controller
 
         return response(null, 204);
     }
+
 
     // public function import_excel(Request $request) 
 	// {

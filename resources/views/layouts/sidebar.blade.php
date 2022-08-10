@@ -46,11 +46,6 @@
             </li>
             <li class="header">TRANSAKSI</li>
             <li>
-                <a href="{{ route('pengeluaran.index') }}">
-                    <i class="fa fa-money"></i> <span>Pengeluaran</span>
-                </a>
-            </li>
-            <li>
                 <a href="{{ route('pembelian.index') }}">
                     <i class="fa fa-download"></i> <span>Pembelian</span>
                 </a>
@@ -73,14 +68,14 @@
             <li class="header">REPORT</li>
             <li>
                 <a href="{{ route('laporan.index') }}">
-                    <i class="fa fa-file-pdf-o"></i> <span>List Laporan</span>
+                    <i class="fa fa-file-pdf-o"></i> <span>Daftar Laporan</span>
                 </a>
             </li>
-            <li>
+            {{-- <li>
                 <a href="{{ route('labarugi.index') }}">
                     <i class="fa fa-file-pdf-o"></i> <span>Laporan labarugi</span>
                 </a>
-            </li>
+            </li> --}}
             <li class="header">SYSTEM</li>
             <li>
                 <a href="{{ route('user.index') }}">

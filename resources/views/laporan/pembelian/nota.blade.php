@@ -1,7 +1,7 @@
 @extends('layouts.master')
 
 @section('title')
-    Laporan Pembelian {{ tanggal_indonesia($tanggalAwal, false) }} s/d {{ tanggal_indonesia($tanggalAkhir, false) }}
+    Laporan Nota {{ tanggal_indonesia($tanggalAwal, false) }} s/d {{ tanggal_indonesia($tanggalAkhir, false) }}
 @endsection
 
 @push('css')
@@ -25,14 +25,12 @@
                 <table class="table table-stiped table-bordered">
                     <thead>
                         <th width="5%">No</th>
-                        <th>Tanggal</th>
-                        <th>Supplier</th>
-                        <th>Total Harga</th>
-                        <th>Diskon</th>
-                        <th>PPN</th>
-                        <th>Total Bayar</th>
-                        <th>Cara Bayar</th>
-                        <th>Jatuh Tempo</th>
+                        <th>Nama Obat</th>
+                        <th>No Batch</th>
+                        <th>Quantity</th>
+                        <th>Harga Satuan</th>
+                        <th>Potongan</th>
+                        <th>Total</th>
                     </thead>
                 </table>
             </div>
@@ -40,7 +38,7 @@
     </div>
 </div>
 
-@includeIf('laporan.pembelian.form')
+@includeIf('laporan.pembelian.notaform')
 @endsection
 
 @push('scripts')
@@ -55,18 +53,16 @@
             serverSide: true,
             autoWidth: false,
             ajax: {
-                url: '{{ route("pembeliantotal.data", [$tanggalAwal, $tanggalAkhir]) }}',
+                url: '{{ route("pembeliannota.data", [$tanggalAwal, $tanggalAkhir]) }}',
             },
             columns: [
                 {data: 'DT_RowIndex', searchable: false, sortable: false},
-                {data: 'tanggal'},
-                {data: 'supplier'},
-                {data: 'total_harga'},
-                {data: 'diskon'},
-                {data: 'ppn'},
+                {data: 'nama_obat'},
+                {data: 'no_batch'},
+                {data: 'quantity'},
+                {data: 'harga_satuan'},
+                {data: 'diskon_item'},
                 {data: 'total_bayar'},
-                {data: 'status'},
-                {data: 'jatuh_tempo'},
             ],
             dom: 'Brt',
             bSort: false,
