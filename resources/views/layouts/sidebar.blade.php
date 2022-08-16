@@ -35,6 +35,11 @@
                 </a>
             </li>
             <li>
+                <a href="{{ route('dokter.index') }}">
+                    <i class="fa fa-id-card"></i> <span>Dokter</span>
+                </a>
+            </li>
+            <li>
                 <a href="{{ route('member.index') }}">
                     <i class="fa fa-id-card"></i> <span>Member</span>
                 </a>

@@ -3,6 +3,7 @@
 use App\Http\Controllers\{
     DashboardController,
     KategoriController,
+    DokterController,
     LaporanController,
     LaporanPenjualanController,
     LaporanLabaRugiController,
@@ -52,6 +53,10 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('/member/data', [MemberController::class, 'data'])->name('member.data');
         Route::post('/member/cetak-member', [MemberController::class, 'cetakMember'])->name('member.cetak_member');
         Route::resource('/member', MemberController::class);
+
+        Route::get('/dokter/data', [DokterController::class, 'data'])->name('dokter.data');
+        Route::post('/dokter/cetak-dokter', [DokterController::class, 'cetakDokter'])->name('dokter.cetak_dokter');
+        Route::resource('/dokter', DokterController::class);
 
         Route::get('/supplier/data', [SupplierController::class, 'data'])->name('supplier.data');
         Route::resource('/supplier', SupplierController::class);

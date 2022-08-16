@@ -16,6 +16,7 @@ class BuatPembelianTable extends Migration
         Schema::create('pembelian', function (Blueprint $table) {
             $table->increments('id_pembelian');
             $table->integer('id_supplier');
+            $table->string('no_faktur')->nullable();
             $table->date('tanggal');
             $table->integer('total_item');
             $table->integer('total_harga');

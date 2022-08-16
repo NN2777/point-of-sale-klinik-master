@@ -7,6 +7,7 @@ use App\Models\Penjualan;
 use App\Models\PenjualanDetail;
 use App\Models\Produk;
 use App\Models\Setting;
+use App\Models\Dokter;
 use Illuminate\Http\Request;
 
 class PenjualanDetailController extends Controller
@@ -15,6 +16,7 @@ class PenjualanDetailController extends Controller
     {
         $produk = Produk::orderBy('nama_produk')->get();
         $member = Member::orderBy('nama')->get();
+        $dokter = Dokter::orderBy('nama')->get();
 
         // Cek apakah ada transaksi yang sedang berjalan
         if ($id_penjualan = session('id_penjualan')) {
@@ -22,8 +24,9 @@ class PenjualanDetailController extends Controller
             $diskon = Penjualan::find($id_penjualan)->diskon ?? 0;
             $ppn = Penjualan::find($id_penjualan)->ppn ?? 0;
             $memberSelected = $penjualan->member ?? new Member();
+            $dokterSelected = $penjualan->dokter ?? new Dokter();
 
-            return view('penjualan_detail.index', compact('produk', 'member', 'diskon', 'ppn', 'id_penjualan', 'penjualan', 'memberSelected'));
+            return view('penjualan_detail.index', compact('produk', 'member', 'dokter', 'diskon', 'ppn', 'id_penjualan', 'penjualan', 'memberSelected', 'dokterSelected'));
         } else {
             if (auth()->user()->level == 1) {
                 return redirect()->route('transaksi.baru');
@@ -87,6 +90,7 @@ class PenjualanDetailController extends Controller
 
         $detail = new PenjualanDetail();
         $detail->id_penjualan = $request->id_penjualan;
+        $detail->no_faktur = $request->no_fakturd;
         $detail->id_produk = $produk->id_produk;
         $detail->harga_jual = $produk->harga_jual;
         $detail->jumlah = 1;

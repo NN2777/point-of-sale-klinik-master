@@ -30,6 +30,10 @@ class PembelianController extends Controller
             ->addColumn('total_harga', function ($pembelian) {
                 return 'Rp. '. format_uang($pembelian->total_harga);
             })
+            ->addColumn('no_faktur', function ($pembelian) {
+                $faktur = $pembelian->no_faktur ?? '';
+                return '<span class="label label-primary">'. $faktur .'</spa>';
+            })
             ->addColumn('bayar', function ($pembelian) {
                 return 'Rp. '. format_uang($pembelian->bayar);
             })
@@ -48,12 +52,13 @@ class PembelianController extends Controller
             ->addColumn('aksi', function ($pembelian) {
                 return '
                 <div class="btn-group">
+                    <button onclick="editForm(`'. route('pembelian.edit', $pembelian->id_pembelian) .'`)" class="btn btn-xs btn-info btn-flat"><i class="fa fa-pencil"></i></button>
                     <button onclick="showDetail(`'. route('pembelian.show', $pembelian->id_pembelian) .'`)" class="btn btn-xs btn-info btn-flat"><i class="fa fa-eye"></i></button>
                     <button onclick="deleteData(`'. route('pembelian.destroy', $pembelian->id_pembelian) .'`)" class="btn btn-xs btn-danger btn-flat"><i class="fa fa-trash"></i></button>
                 </div>
                 ';
             })
-            ->rawColumns(['aksi'])
+            ->rawColumns(['aksi','no_faktur'])
             ->make(true);
     }
 
@@ -61,6 +66,7 @@ class PembelianController extends Controller
     {
         $pembelian = new Pembelian();
         $pembelian->id_supplier = $id;
+        $pembelian->no_faktur   = $pembelian->id_pembelian;
         $pembelian->total_item  = 0;
         $pembelian->total_harga = 0;
         $pembelian->ppn         = 0;
@@ -81,6 +87,7 @@ class PembelianController extends Controller
     {
         $pembelian = Pembelian::findOrFail($request->id_pembelian);
         $pembelian->total_item = $request->total_item;
+        $pembelian->no_faktur = $request->no_faktur;
         $pembelian->total_harga = $request->total;
         $pembelian->diskon = $request->diskon;
         $pembelian->ppn = $request->ppn;
@@ -92,12 +99,19 @@ class PembelianController extends Controller
 
         $detail = PembelianDetail::where('id_pembelian', $pembelian->id_pembelian)->get();
         foreach ($detail as $item) {
+            $item->no_faktur = $request->no_faktur;
+            $item->update();
             $produk = Produk::find($item->id_produk);
             $produk->stok += $item->jumlah;
             $produk->update();
         }
 
         return redirect()->route('pembelian.index');
+    }
+
+    public function edit(Request $request)
+    {
+        $pembelian = Pembelian::findOrFail($request->id_pembelian);
     }
 
     public function show($id)

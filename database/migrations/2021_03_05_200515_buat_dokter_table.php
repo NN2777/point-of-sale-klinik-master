@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class BuatSettingTable extends Migration
+class BuatDokterTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,15 +13,12 @@ class BuatSettingTable extends Migration
      */
     public function up()
     {
-        Schema::create('setting', function (Blueprint $table) {
-            $table->increments('id_setting');
-            $table->string('nama_perusahaan');
+        Schema::create('dokter', function (Blueprint $table) {
+            $table->increments('id_dokter');
+            $table->string('kode_dokter')->unique();
+            $table->string('nama');
             $table->text('alamat')->nullable();
             $table->string('telepon');
-            $table->tinyInteger('tipe_nota');
-            $table->string('path_logo');
-            $table->string('path_kartu_member');
-            $table->string('path_kartu_dokter');
             $table->timestamps();
         });
     }
@@ -33,6 +30,6 @@ class BuatSettingTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('setting');
+        Schema::dropIfExists('dokter');
     }
 }

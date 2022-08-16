@@ -86,7 +86,14 @@ Transaksi Penjualan
                             <input type="hidden" name="total_item" id="total_item">
                             <input type="hidden" name="bayar" id="bayar">
                             <input type="hidden" name="id_member" id="id_member" value="{{ $memberSelected->id_member }}">
+                            <input type="hidden" name="id_dokter" id="id_dokter" value="{{ $dokterSelected->id_dokter }}">
 
+                            <div class="form-group row">
+                                <label for="no_faktur" class="col-lg-2 control-label">No Faktur</label>
+                                <div class="col-lg-8">
+                                    <input type="text" name="no_faktur" id="no_faktur" class="form-control" value="{{ $id_penjualan  }}">
+                                </div>
+                            </div>
                             <div class="form-group row">
                                 <label for="tanggal" class="col-lg-2 control-label">Tanggal</label>
                                 <div class="col-lg-8">
@@ -106,6 +113,17 @@ Transaksi Penjualan
                                         <input type="text" class="form-control" id="kode_member" value="{{ $memberSelected->kode_member }}">
                                         <span class="input-group-btn">
                                             <button onclick="tampilMember()" class="btn btn-info btn-flat" type="button"><i class="fa fa-arrow-right"></i></button>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="kode_dokter" class="col-lg-2 control-label">Dokter</label>
+                                <div class="col-lg-8">
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" id="kode_dokter" value="{{ $dokterSelected->kode_dokter }}">
+                                        <span class="input-group-btn">
+                                            <button onclick="tampilDokter()" class="btn btn-info btn-flat" type="button"><i class="fa fa-arrow-right"></i></button>
                                         </span>
                                     </div>
                                 </div>
@@ -168,6 +186,8 @@ Transaksi Penjualan
 
 @includeIf('penjualan_detail.produk')
 @includeIf('penjualan_detail.member')
+@includeIf('penjualan_detail.dokter')
+
 @endsection
 
 @push('scripts')
@@ -313,7 +333,7 @@ Transaksi Penjualan
         $.post('{{ URL::route('transaksi.store') }}', $('.form-produk').serialize())
             .done(response => {
                 $('#kode_produk').focus();
-                table.ajax.reload(() => loadForm($('#diskon').val()));
+                table.ajax.reload(() => loadForm($('#diskon').val(), $('#ppn').val()));
             })
             .fail(errors => {
                 alert('Tidak dapat menyimpan data');
@@ -329,13 +349,31 @@ Transaksi Penjualan
         $('#id_member').val(id);
         $('#kode_member').val(kode);
         $('#diskon').val('{{ $diskon }}');
-        loadForm($('#diskon').val());
+        $('#ppn').val('{{ $ppn }}');
+        loadForm($('#diskon').val(), $('#ppn').val()) ;
         $('#diterima').val(0).focus().select();
         hideMember();
     }
 
     function hideMember() {
         $('#modal-member').modal('hide');
+    }
+
+    function tampilDokter() {
+        $('#modal-dokter').modal('show');
+    }
+
+    function pilihDokter(id, kode) {
+        $('#id_dokter').val(id);
+        $('#kode_dokter').val(kode);
+        $('#diskon').val('{{ $diskon }}');
+        loadForm($('#diskon').val());
+        $('#diterima').val(0).focus().select();
+        hideDokter();
+    }
+
+    function hideDokter() {
+        $('#modal-dokter').modal('hide');
     }
 
     function deleteData(url) {
