@@ -45,15 +45,15 @@ Transaksi Pembelian
                 <table>
                     <tr>
                         <td>Supplier</td>
-                        <td>: {{ $supplier->nama }}</td>
+                        <td>: {{ $pembelian->supplier->nama }}</td>
                     </tr>
                     <tr>
                         <td>Telepon</td>
-                        <td>: {{ $supplier->telepon }}</td>
+                        <td>: {{ $pembelian->supplier->telepon }}</td>
                     </tr>
                     <tr>
                         <td>Alamat</td>
-                        <td>: {{ $supplier->alamat }}</td>
+                        <td>: {{ $pembelian->supplier->alamat }}</td>
                     </tr>
                 </table>
             </div>
@@ -65,7 +65,7 @@ Transaksi Pembelian
                         <label for="kode_produk" class="col-lg-2">Kode Produk</label>
                         <div class="col-lg-5">
                             <div class="input-group">
-                                <input type="hidden" name="id_pembelian" id="id_pembelian" value="{{ $id_pembelian }}">
+                                <input type="hidden" name="id_pembelian" id="id_pembelian" value="{{ $pembelian->id_pembelian }}">
                                 <input type="hidden" name="id_produk" id="id_produk">
                                 <input type="text" class="form-control" name="kode_produk" id="kode_produk">
                                 <span class="input-group-btn">
@@ -96,7 +96,7 @@ Transaksi Pembelian
                     <div class="col-lg-4">
                         <form action="{{ route('pembelian.store') }}" class="form-pembelian" method="post">
                             @csrf
-                            <input type="hidden" name="id_pembelian" value="{{ $id_pembelian }}">
+                            <input type="hidden" name="id_pembelian" value="{{ $pembelian->id_pembelian }}">
                             <input type="hidden" name="total" id="total">
                             <input type="hidden" name="total_item" id="total_item">
                             <input type="hidden" name="bayar" id="bayar">
@@ -104,13 +104,13 @@ Transaksi Pembelian
                             <div class="form-group row">
                                 <label for="no_faktur" class="col-lg-2 control-label">No Faktur</label>
                                 <div class="col-lg-8">
-                                    <input type="text" name="no_faktur" id="no_faktur" class="form-control" value="{{ $id_pembelian }}">
+                                    <input type="text" name="no_faktur" id="no_faktur" class="form-control" value="{{ $pembelian->no_faktur }}">
                                 </div>
                             </div>
                             <div class="form-group row">
                                 <label for="tanggal" class="col-lg-2 control-label">Tanggal</label>
                                 <div class="col-lg-8">
-                                    <input type="text" name="tanggal" id="tanggal" class="form-control datepicker" value="{{ date('Y-m-d') }}">
+                                    <input type="text" name="tanggal" id="tanggal" class="form-control datepicker" value="{{ $pembelian->tanggal }}">
                                 </div>
                             </div>
                             <div class="form-group row">
@@ -122,26 +122,26 @@ Transaksi Pembelian
                             <div class="form-group row">
                                 <label for="diskon" class="col-lg-2 control-label">Diskon</label>
                                 <div class="col-lg-8">
-                                    <input type="number" name="diskon" id="diskon" class="form-control" value="{{ $diskon }}">
+                                    <input type="number" name="diskon" id="diskon" class="form-control" value="{{ $pembelian->diskon }}">
                                 </div>
                             </div>
                             <div class="form-group row">
                                 <label for="ppn" class="col-lg-2 control-label">PPN</label>
                                 <div class="col-lg-8">
-                                    <input type="number" name="ppn" id="ppn" class="form-control" value="{{ $ppn }}">
+                                    <input type="number" name="ppn" id="ppn" class="form-control" value="{{ $pembelian->ppn }}">
                                 </div>
                             </div>
                             <div class="form-group row">
                                 <label for="carabayar" class="col-lg-2 control-label">Cara Pembayaran</label>
                                 <div class="col-lg-8">
-                                    <input type="radio" name="status" value="Tunai">Tunai
+                                    <input type="radio" name="status" value="Tunai" checked>Tunai
                                     <input type="radio" name="status" value="Kredit">Kredit
                                 </div>
                             </div>
                             <div class="form-group row">
                                 <label for="jatuh_tempo" class="col-lg-2 control-label">Jatuh Tempo</label>
                                 <div class="col-lg-8">
-                                <input type="text" name="jatuh_tempo" id="jatuh_tempo" class="form-control datepicker" required autofocus value="{{ date('Y-m-d') }}" style="border-radius: 0 !important;">
+                                <input type="text" name="jatuh_tempo" id="jatuh_tempo" class="form-control datepicker" required autofocus value="{{ $pembelian->jatuh_tempo }}" style="border-radius: 0 !important;">
                                 <span class="help-block with-errors"></span>
                                 </div>
                             </div>
@@ -180,7 +180,7 @@ Transaksi Pembelian
                 serverSide: true,
                 autoWidth: false,
                 ajax: {
-                    url: '{{ route('pembelian_detail.data', $id_pembelian) }}',
+                    url: '{{ route('pembelian_detail.data', $pembelian->id_pembelian) }}',
                 },
                 columns: [{
                         data: 'DT_RowIndex',

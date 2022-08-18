@@ -52,7 +52,7 @@ class PembelianController extends Controller
             ->addColumn('aksi', function ($pembelian) {
                 return '
                 <div class="btn-group">
-                    <button onclick="editForm(`'. route('pembelian.edit', $pembelian->id_pembelian) .'`)" class="btn btn-xs btn-info btn-flat"><i class="fa fa-pencil"></i></button>
+                    <a href="'. route('pembelian.edit', $pembelian->id_pembelian) .'" class="btn btn-xs btn-info btn-flat"><i class="fa fa-pencil"></i></a>
                     <button onclick="showDetail(`'. route('pembelian.show', $pembelian->id_pembelian) .'`)" class="btn btn-xs btn-info btn-flat"><i class="fa fa-eye"></i></button>
                     <button onclick="deleteData(`'. route('pembelian.destroy', $pembelian->id_pembelian) .'`)" class="btn btn-xs btn-danger btn-flat"><i class="fa fa-trash"></i></button>
                 </div>
@@ -109,9 +109,29 @@ class PembelianController extends Controller
         return redirect()->route('pembelian.index');
     }
 
-    public function edit(Request $request)
+    public function edit($id)
     {
-        $pembelian = Pembelian::findOrFail($request->id_pembelian);
+        $pembelian = Pembelian::with('supplier','pembelian_detail')->findOrFail($id);
+            // $id_supplier = $pembelian->id_supplier;
+            // $no_faktur = $pembelian->no_faktur;
+            // $total_item = $pembelian->total_item;
+            // $total_harga = $pembelian->total_harga;
+            // $ppn = $pembelian->ppn;
+            // $diskon = $pembelian->diskon;     
+            // $status = $pembelian->status;    
+            // $bayar = $pembelian->bayar;      
+            // $jatuh_tempo = $pembelian->jatuh_tempo; 
+            // $tanggal = $pembelian->tanggal;
+        $datapembelian = array();
+        $datapembelian = $pembelian;
+
+        // $supplier = Supplier::find('id_supplier', $pembelian->id_supplier)->get();
+
+        // $detail = PembelianDetail::where('id_pembelian', $pembelian->id_pembelian)->get(); 
+        $produk = PembelianDetail::with('produk')->where('id_pembelian', $id)->get();
+        session(['id_pembelian' => $pembelian->id_pembelian]);
+        session(['id_supplier' => $pembelian->id_supplier]);        
+        return view('pembelian_detail.edit', compact('pembelian','produk'));
     }
 
     public function show($id)
