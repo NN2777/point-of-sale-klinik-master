@@ -103,7 +103,8 @@ class PembelianDetailController extends Controller
 
     public function loadForm($diskon, $ppn, $total)
     {
-        $bayar = $total + ($ppn / 100 * $total) - ($diskon / 100 * $total);
+        $didiskon = $total - ($diskon / 100 * $total);
+        $bayar   = $didiskon + ($ppn / 100 * $didiskon);
         $data  = [
             'totalrp' => format_uang($total),
             'bayar' => $bayar,
