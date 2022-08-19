@@ -6,6 +6,8 @@ use App\Models\Penjualan;
 use App\Models\PenjualanDetail;
 use App\Models\Produk;
 use App\Models\Setting;
+use App\Models\Member;
+use App\Models\Dokter;
 use Illuminate\Http\Request;
 use PDF;
 
@@ -63,6 +65,7 @@ class PenjualanController extends Controller
             ->addColumn('aksi', function ($penjualan) {
                 return '
                 <div class="btn-group">
+                    <a href="'. route('penjualan.edit', $penjualan->id_penjualan) .'" class="btn btn-xs btn-info btn-flat"><i class="fa fa-pencil"></i></a>
                     <button onclick="showDetail(`'. route('penjualan.show', $penjualan->id_penjualan) .'`)" class="btn btn-xs btn-info btn-flat"><i class="fa fa-eye"></i></button>
                     <button onclick="deleteData(`'. route('penjualan.destroy', $penjualan->id_penjualan) .'`)" class="btn btn-xs btn-danger btn-flat"><i class="fa fa-trash"></i></button>
                 </div>
@@ -126,6 +129,23 @@ class PenjualanController extends Controller
         return redirect()->route('transaksi.selesai');
     }
 
+    public function edit($id)
+    {   
+        $produk = Produk::orderBy('nama_produk')->get();
+        $member = Member::orderBy('nama')->get();
+        $dokter = Dokter::orderBy('nama')->get();
+        
+        session(['id_penjualan' => $id]);
+        $id_penjualan = session('id_penjualan');
+        $penjualan = Penjualan::find($id);
+        // dd($id_penjualan);
+        $diskon = Penjualan::find($id)->diskon ?? 0;
+        $ppn = Penjualan::find($id)->ppn ?? 0;
+        $memberSelected = $penjualan->member ?? new Member();
+        $dokterSelected = $penjualan->dokter ?? new Dokter();
+        return view('penjualan_detail.edit', compact('produk', 'member', 'dokter', 'diskon', 'ppn', 'id_penjualan', 'penjualan', 'memberSelected', 'dokterSelected'));
+    }
+
     public function show($id)
     {
         $detail = PenjualanDetail::with('produk')->where('id_penjualan', $id)->get();
@@ -142,6 +162,18 @@ class PenjualanController extends Controller
             ->addColumn('harga_jual', function ($detail) {
                 return 'Rp. '. format_uang($detail->harga_jual);
             })
+            // ->addColumn('harga_jual_1', function ($detail) {
+            //     return 'Rp. '. format_uang($detail->harga_jual_1);
+            // })
+            // ->addColumn('harga_jual_2', function ($detail) {
+            //     return 'Rp. '. format_uang($detail->harga_jual_2);
+            // })
+            // ->addColumn('harga_jual_3', function ($detail) {
+            //     return 'Rp. '. format_uang($detail->harga_jual_3);
+            // })
+            // ->addColumn('harga_jual_4', function ($detail) {
+            //     return 'Rp. '. format_uang($detail->harga_jual_4);
+            // })
             ->addColumn('jumlah', function ($detail) {
                 return format_uang($detail->jumlah);
             })

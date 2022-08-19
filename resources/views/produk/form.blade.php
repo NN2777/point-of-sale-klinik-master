@@ -45,9 +45,30 @@
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label for="harga_jual" class="col-lg-2 col-lg-offset-1 control-label">Harga Jual</label>
+                        <label for="harga_jual_1" class="col-lg-2 col-lg-offset-1 control-label">Harga Jual 1</label>
                         <div class="col-lg-6">
-                            <input type="number" name="harga_jual" id="harga_jual" class="form-control" required>
+                            <input type="number" name="harga_jual_1" id="harga_jual_1" class="form-control" required>
+                            <span class="help-block with-errors"></span>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="harga_jual_2" class="col-lg-2 col-lg-offset-1 control-label">Harga Jual 2</label>
+                        <div class="col-lg-6">
+                            <input type="number" name="harga_jual_2" id="harga_jual_2" class="form-control" required>
+                            <span class="help-block with-errors"></span>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="harga_jual_3" class="col-lg-2 col-lg-offset-1 control-label">Harga Jual 3</label>
+                        <div class="col-lg-6">
+                            <input type="number" name="harga_jual_3" id="harga_jual_3" class="form-control" required>
+                            <span class="help-block with-errors"></span>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="harga_jual_4" class="col-lg-2 col-lg-offset-1 control-label">Harga Jual 4</label>
+                        <div class="col-lg-6">
+                            <input type="number" name="harga_jual_4" id="harga_jual_4" class="form-control" required>
                             <span class="help-block with-errors"></span>
                         </div>
                     </div>

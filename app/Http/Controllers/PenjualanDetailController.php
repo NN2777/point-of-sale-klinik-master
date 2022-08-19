@@ -50,7 +50,16 @@ class PenjualanDetailController extends Controller
             $row = array();
             $row['kode_produk'] = '<span class="label label-success">'. $item->produk['kode_produk'] .'</span';
             $row['nama_produk'] = $item->produk['nama_produk'];
-            $row['harga_jual']  = 'Rp. '. format_uang($item->harga_jual);
+            $row['harga_jual']  = '<select class="form-control input-sm harga_jual"  data-id="'. $item->id_penjualan_detail .'>
+                <option value="'. $item->produk['harga_jual_1'] .'">Harga 1 : '. $item->produk['harga_jual_1'] .'</option>
+                <option value="'. $item->produk['harga_jual_1'] .'" '. ($item->produk['harga_jual_1'] == $item->harga_jual ? 'selected' : '') .'>Harga 1 : '. $item->produk['harga_jual_1'] .'</option>
+                <option value="'. $item->produk['harga_jual_2'] .'" '. ($item->produk['harga_jual_2'] == $item->harga_jual ? 'selected' : '') .'>Harga 2 : '. $item->produk['harga_jual_2'] .'</option>
+                <option value="'. $item->produk['harga_jual_3'] .'" '. ($item->produk['harga_jual_3'] == $item->harga_jual ? 'selected' : '') .'>Harga 3 : '. $item->produk['harga_jual_3'] .'</option>
+                <option value="'. $item->produk['harga_jual_4'] .'" '. ($item->produk['harga_jual_4'] == $item->harga_jual ? 'selected' : '') .'>Harga 4 : '. $item->produk['harga_jual_4'] .'</option>
+            </select>';
+            // '.@if(old('country') == $country->id || $country->id == $user->country) selected @endif.'
+            // '. $item->produk['harga_jual_1'] == $item->harga_jual ? 'selected' : '' .'
+            //'Rp. '. format_uang($item->harga_jual); '<input type="number" class="form-control input-sm quantity" data-id="'. $item->id_penjualan_detail .'" value="'. $item->jumlah .'">'
             $row['jumlah']      = '<input type="number" class="form-control input-sm quantity" data-id="'. $item->id_penjualan_detail .'" value="'. $item->jumlah .'">';
             $row['diskon']      = $item->diskon . '%';
             $row['subtotal']    = 'Rp. '. format_uang($item->subtotal);
@@ -77,7 +86,7 @@ class PenjualanDetailController extends Controller
         return datatables()
             ->of($data)
             ->addIndexColumn()
-            ->rawColumns(['aksi', 'kode_produk', 'jumlah'])
+            ->rawColumns(['aksi', 'kode_produk', 'jumlah','harga_jual'])
             ->make(true);
     }
 
@@ -92,10 +101,10 @@ class PenjualanDetailController extends Controller
         $detail->id_penjualan = $request->id_penjualan;
         $detail->no_faktur = $request->no_fakturd;
         $detail->id_produk = $produk->id_produk;
-        $detail->harga_jual = $produk->harga_jual;
+        $detail->harga_jual = $produk->harga_jual_1;
         $detail->jumlah = 1;
         $detail->diskon = $produk->diskon;
-        $detail->subtotal = $produk->harga_jual - ($produk->diskon / 100 * $produk->harga_jual);;
+        $detail->subtotal = $detail->harga_jual - ($produk->diskon / 100 * $detail->harga_jual);;
         $detail->save();
 
         return response()->json('Data berhasil disimpan', 200);
@@ -104,9 +113,11 @@ class PenjualanDetailController extends Controller
     public function update(Request $request, $id)
     {
         $detail = PenjualanDetail::find($id);
+        $detail->harga_jual = $request->harga_jual;
         $detail->jumlah = $request->jumlah;
         $detail->subtotal = $detail->harga_jual * $request->jumlah - (($detail->diskon * $request->jumlah) / 100 * $detail->harga_jual);;
         $detail->update();
+        
     }
 
     public function destroy($id)

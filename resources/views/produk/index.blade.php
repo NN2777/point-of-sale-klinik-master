@@ -34,7 +34,10 @@
                             <th>Kategori</th>
                             <th>Merk</th>
                             <th>Harga Beli</th>
-                            <th>Harga Jual</th>
+                            <th>Harga Jual 1</th>
+                            <th>Harga Jual 2</th>
+                            <th>Harga Jual 3</th>
+                            <th>Harga Jual 4</th>
                             <th>Diskon</th>
                             <th>Stok</th>
                             <th width="15%"><i class="fa fa-cog"></i></th>
@@ -70,7 +73,10 @@
                 {data: 'nama_kategori'},
                 {data: 'merk'},
                 {data: 'harga_beli'},
-                {data: 'harga_jual'},
+                {data: 'harga_jual_1'},
+                {data: 'harga_jual_2'},
+                {data: 'harga_jual_3'},
+                {data: 'harga_jual_4'},
                 {data: 'diskon'},
                 {data: 'stok'},
                 {data: 'aksi', searchable: false, sortable: false},

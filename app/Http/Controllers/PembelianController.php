@@ -128,7 +128,8 @@ class PembelianController extends Controller
         // $supplier = Supplier::find('id_supplier', $pembelian->id_supplier)->get();
 
         // $detail = PembelianDetail::where('id_pembelian', $pembelian->id_pembelian)->get(); 
-        $produk = PembelianDetail::with('produk')->where('id_pembelian', $id)->get();
+        // $produk = PembelianDetail::with('produk')->where('id_pembelian', $id)->get();
+        $produk = Produk::orderBy('nama_produk')->get();
         session(['id_pembelian' => $pembelian->id_pembelian]);
         session(['id_supplier' => $pembelian->id_supplier]);        
         return view('pembelian_detail.edit', compact('pembelian','produk'));

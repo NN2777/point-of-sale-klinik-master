@@ -18,12 +18,12 @@ class BuatProdukTable extends Migration
             $table->unsignedInteger('id_kategori');
             $table->string('nama_produk')->unique();
             $table->string('merk')->nullable();
-            $table->integer('harga_beli_1');
-            $table->integer('harga_beli_2');
-            $table->integer('harga_beli_3');
-            $table->integer('harga_beli_4');
+            $table->integer('harga_beli');
             $table->tinyInteger('diskon')->default(0);
-            $table->integer('harga_jual');
+            $table->integer('harga_jual_1');
+            $table->integer('harga_jual_2');
+            $table->integer('harga_jual_3');
+            $table->integer('harga_jual_4');
             $table->integer('stok');
             $table->timestamps();
         });

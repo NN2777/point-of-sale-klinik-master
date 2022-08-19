@@ -49,7 +49,7 @@ Transaksi Penjualan
                         <label for="kode_produk" class="col-lg-2">Kode Produk</label>
                         <div class="col-lg-5">
                             <div class="input-group">
-                                <input type="hidden" name="id_penjualan" id="id_penjualan" value="{{ $id_penjualan }}">
+                                <input type="hidden" name="id_penjualan" id="id_penjualan" value="{{ $penjualan->id_penjualan }}">
                                 <input type="hidden" name="id_produk" id="id_produk">
                                 <input type="text" class="form-control" name="kode_produk" id="kode_produk">
                                 <span class="input-group-btn">
@@ -91,13 +91,13 @@ Transaksi Penjualan
                             <div class="form-group row">
                                 <label for="no_faktur" class="col-lg-2 control-label">No Faktur</label>
                                 <div class="col-lg-8">
-                                    <input type="text" name="no_faktur" id="no_faktur" class="form-control" value="{{ $id_penjualan  }}">
+                                    <input type="text" name="no_faktur" id="no_faktur" class="form-control" value="{{ $penjualan->no_faktur  }}">
                                 </div>
                             </div>
                             <div class="form-group row">
                                 <label for="tanggal" class="col-lg-2 control-label">Tanggal</label>
                                 <div class="col-lg-8">
-                                    <input type="text" name="tanggal" id="tanggal" class="form-control datepicker" value="{{ date('Y-m-d') }}">
+                                    <input type="text" name="tanggal" id="tanggal" class="form-control datepicker" value="{{ $penjualan->tanggal }}">
                                 </div>
                             </div>
                             <div class="form-group row">
@@ -143,14 +143,14 @@ Transaksi Penjualan
                             <div class="form-group row">
                                 <label for="carabayar" class="col-lg-2 control-label">Cara Pembayaran</label>
                                 <div class="col-lg-8">
-                                    <input type="radio" name="status" value="Tunai">Tunai
+                                    <input type="radio" name="status" value="Tunai" checked>Tunai
                                     <input type="radio" name="status" value="Kredit">Kredit
                                 </div>
                             </div>
                             <div class="form-group row">
                                 <label for="jatuh_tempo" class="col-lg-2 control-label">Jatuh Tempo</label>
                                 <div class="col-lg-8">
-                                <input type="text" name="jatuh_tempo" id="jatuh_tempo" class="form-control datepicker" required autofocus value="{{ date('Y-m-d') }}" style="border-radius: 0 !important;">
+                                <input type="text" name="jatuh_tempo" id="jatuh_tempo" class="form-control datepicker" required autofocus value="{{ $penjualan->jatuh_tempo }}" style="border-radius: 0 !important;">
                                 <span class="help-block with-errors"></span>
                                 </div>
                             </div>
@@ -247,75 +247,17 @@ Transaksi Penjualan
             });
         table2 = $('.table-produk').DataTable();
 
-        // $(document).on('input', '.quantity', function() {
-        //     let id = $(this).data('id');
-        //     let jumlah = parseInt($(this).val());
-
-        //     if (jumlah < 1) {
-        //         $(this).val(1);
-        //         alert('Jumlah tidak boleh kurang dari 1');
-        //         return;
-        //     }
-        //     if (jumlah > 10000) {
-        //         $(this).val(10000);
-        //         alert('Jumlah tidak boleh lebih dari 10000');
-        //         return;
-        //     }
-
-        //     $.post(`{{ url('/transaksi') }}/${id}`, {
-        //             '_token': $('[name=csrf-token]').attr('content'),
-        //             '_method': 'put',
-        //             'jumlah': jumlah
-        //         })
-        //         .done(response => {
-        //             $(this).on('mouseout', function() {
-        //                 table.ajax.reload(() => loadForm($('#diskon').val()));
-        //             });
-        //         })
-        //         .fail(errors => {
-        //             alert('Tidak dapat menyimpan data');
-        //             return;
-        //         });
-        // });
-
-        // $(document).on('change', '.harga_jual', function() {
-        //     let id = $(this).data('id');
-        //     let harga_jual = parseInt($(this).val());
-
-        //     $.post(`{{ url('/transaksi') }}/${id}`, {
-        //             '_token': $('[name=csrf-token]').attr('content'),
-        //             '_method': 'put',
-        //             'harga_jual': harga_jual
-        //         })
-        //         .done(response => {
-        //             $(this).on('mouseout', function() {
-        //                 table.ajax.reload(() => loadForm($('#diskon').val()));
-        //             });
-        //         })
-        //         .fail(errors => {
-        //             alert('Tidak dapat menyimpan data');
-        //             return;
-        //         });
-        // });
-
-
-        $('.datepicker').datepicker({
-            format: 'yyyy-mm-dd',
-            autoclose: true
-        });
-
-        $(document).on('input', '.quantity', '.harga_jual', function() {
-            let id = $('.quantity').data('id');
-            let jumlah = parseInt($('.quantity').val());
-            let harga_jual = $('.harga_jual').val();
+        $(document).on('input', '.quantity', function() {
+            let id = $(this).data('id');
+            let jumlah = parseInt($(this).val());
 
             if (jumlah < 1) {
-                $('.quantity').val(1);
+                $(this).val(1);
                 alert('Jumlah tidak boleh kurang dari 1');
                 return;
             }
             if (jumlah > 10000) {
-                $('.quantity').val(10000);
+                $(this).val(10000);
                 alert('Jumlah tidak boleh lebih dari 10000');
                 return;
             }
@@ -323,8 +265,7 @@ Transaksi Penjualan
             $.post(`{{ url('/transaksi') }}/${id}`, {
                     '_token': $('[name=csrf-token]').attr('content'),
                     '_method': 'put',
-                    'jumlah': jumlah,
-                    'harga_jual': harga_jual
+                    'jumlah': jumlah
                 })
                 .done(response => {
                     $(this).on('mouseout', function() {
@@ -337,67 +278,11 @@ Transaksi Penjualan
                 });
         });
 
-        $(document).on('input', '.harga_jual', function() {
-            let id = $('.quantity').data('id');
-            let jumlah = parseInt($('.quantity').val());
-            let harga_jual = $('.harga_jual').val();
 
-            $.post(`{{ url('/transaksi') }}/${id}`, {
-                    '_token': $('[name=csrf-token]').attr('content'),
-                    '_method': 'put',
-                    'jumlah': jumlah,
-                    'harga_jual': harga_jual
-                })
-                .done(response => {
-                    $(this).on('mouseout', function() {
-                        table.ajax.reload(() => loadForm($('#diskon').val()));
-                    });
-                })
-                .fail(errors => {
-                    alert('Tidak dapat menyimpan data');
-                    return;
-                });
+        $('.datepicker').datepicker({
+            format: 'yyyy-mm-dd',
+            autoclose: true
         });
-
-        // $('.harga_jual').on('input', function() {
-        //     let id = $('.harga_jual').data('id');
-        //     let jumlah = parseInt($('.quantity').val());
-        //     let harga_jual = $('.harga_jual').val();
-
-        //     $.post(`{{ url('/transaksi') }}/${id}`, {
-        //             '_token': $('[name=csrf-token]').attr('content'),
-        //             '_method': 'put',
-        //             'jumlah': jumlah,
-        //             'harga_jual': harga_jual
-        //         })
-        //         .done(response => {
-        //             $(this).on('mouseout', function() {
-        //                 table.ajax.reload(() => loadForm($('#diskon').val()));
-        //             });
-        //         })
-        //         .fail(errors => {
-        //             alert('Tidak dapat menyimpan data');
-        //             return;
-        //         });
-        // });
-
-        // $(document).on('input', '.quantity', '.harga_jual', function() {
-
-        //     $.post(`{{ url('/transaksi') }}/${id}`, {
-        //             '_token': $('[name=csrf-token]').attr('content'),
-        //             '_method': 'put',
-        //             'harga_jual': harga_jual,
-        //         })
-        //         .done(response => {
-        //             $(this).on('mouseout', function() {
-        //                 table.ajax.reload(() => loadForm($('#diskon').val()));
-        //             });
-        //         })
-        //         .fail(errors => {
-        //             alert('Tidak dapat menyimpan data');
-        //             return;
-        //         });
-        // });
 
         $(document).on('input', '#diskon', function() {
             if ($(this).val() == "") {
