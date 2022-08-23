@@ -214,7 +214,7 @@ Transaksi Pembelian
                 paginate: false
             })
             .on('draw.dt', function() {
-                loadForm($('#diskon').val(), $('ppn').val());
+                loadForm($('#diskon').val(), $('#ppn').val());
             });
         table2 = $('.table-produk').DataTable();
 
@@ -311,7 +311,7 @@ Transaksi Pembelian
         $.post('{{ route('pembelian_detail.store') }}', $('.form-produk').serialize())
             .done(response => {
                 $('#kode_produk').focus();
-                table.ajax.reload(() => loadForm($('#diskon').val(), $('ppn').val()));
+                table.ajax.reload(() => loadForm($('#diskon').val(), $('#ppn').val()));
             })
             .fail(errors => {
                 alert('Tidak dapat menyimpan data');

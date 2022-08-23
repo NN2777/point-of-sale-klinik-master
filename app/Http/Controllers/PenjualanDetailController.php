@@ -61,14 +61,14 @@ class PenjualanDetailController extends Controller
             // '. $item->produk['harga_jual_1'] == $item->harga_jual ? 'selected' : '' .'
             //'Rp. '. format_uang($item->harga_jual); '<input type="number" class="form-control input-sm quantity" data-id="'. $item->id_penjualan_detail .'" value="'. $item->jumlah .'">'
             $row['jumlah']      = '<input type="number" class="form-control input-sm quantity" data-id="'. $item->id_penjualan_detail .'" value="'. $item->jumlah .'">';
-            $row['diskon']      = $item->diskon . '%';
+            $row['diskon']      = $item->produk['diskon'] . '%';
             $row['subtotal']    = 'Rp. '. format_uang($item->subtotal);
             $row['aksi']        = '<div class="btn-group">
                                     <button onclick="deleteData(`'. route('transaksi.destroy', $item->id_penjualan_detail) .'`)" class="btn btn-xs btn-danger btn-flat"><i class="fa fa-trash"></i></button>
                                 </div>';
             $data[] = $row;
 
-            $total += $item->harga_jual * $item->jumlah - (($item->diskon * $item->jumlah) / 100 * $item->harga_jual);;
+            $total += $item->harga_jual * $item->jumlah - (($item->produk['diskon'] * $item->jumlah) / 100 * $item->harga_jual);;
             $total_item += $item->jumlah;
         }
         $data[] = [
@@ -129,7 +129,7 @@ class PenjualanDetailController extends Controller
     }
 
     public function loadForm($diskon = 0, $total = 0, $diterima = 0, $ppn = 0)
-    {   
+    {
         $didiskon = $total - ($diskon / 100 * $total);
         $bayar   = $didiskon + ($ppn / 100 * $didiskon);
         $kembali = ($diterima != 0) ? $diterima - $bayar : 0;

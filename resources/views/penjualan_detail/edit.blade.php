@@ -143,8 +143,8 @@ Transaksi Penjualan
                             <div class="form-group row">
                                 <label for="carabayar" class="col-lg-2 control-label">Cara Pembayaran</label>
                                 <div class="col-lg-8">
-                                    <input type="radio" name="status" value="Tunai" checked>Tunai
-                                    <input type="radio" name="status" value="Kredit">Kredit
+                                    <input type="radio" name="status" value="Tunai"  {{ $penjualan->status == 'Tunai' ? 'checked' : ''}}>Tunai
+                                    <input type="radio" name="status" value="Kredit" {{ $penjualan->status == 'Kredit' ? 'checked' : ''}}>Kredit
                                 </div>
                             </div>
                             <div class="form-group row">
@@ -247,17 +247,18 @@ Transaksi Penjualan
             });
         table2 = $('.table-produk').DataTable();
 
-        $(document).on('input', '.quantity', function() {
-            let id = $(this).data('id');
-            let jumlah = parseInt($(this).val());
+        $(document).on('input', '.quantity', '.harga_jual', function() {
+            let id = $('.quantity').data('id');
+            let jumlah = parseInt($('.quantity').val());
+            let harga_jual = $('.harga_jual').val();
 
             if (jumlah < 1) {
-                $(this).val(1);
+                $('.quantity').val(1);
                 alert('Jumlah tidak boleh kurang dari 1');
                 return;
             }
             if (jumlah > 10000) {
-                $(this).val(10000);
+                $('.quantity').val(10000);
                 alert('Jumlah tidak boleh lebih dari 10000');
                 return;
             }
@@ -265,7 +266,8 @@ Transaksi Penjualan
             $.post(`{{ url('/transaksi') }}/${id}`, {
                     '_token': $('[name=csrf-token]').attr('content'),
                     '_method': 'put',
-                    'jumlah': jumlah
+                    'jumlah': jumlah,
+                    'harga_jual': harga_jual
                 })
                 .done(response => {
                     $(this).on('mouseout', function() {
@@ -277,7 +279,28 @@ Transaksi Penjualan
                     return;
                 });
         });
+        
+        $(document).on('input', '.harga_jual', function() {
+            let id = $('.quantity').data('id');
+            let jumlah = parseInt($('.quantity').val());
+            let harga_jual = $('.harga_jual').val();
 
+            $.post(`{{ url('/transaksi') }}/${id}`, {
+                    '_token': $('[name=csrf-token]').attr('content'),
+                    '_method': 'put',
+                    'jumlah': jumlah,
+                    'harga_jual': harga_jual
+                })
+                .done(response => {
+                    $(this).on('mouseout', function() {
+                        table.ajax.reload(() => loadForm($('#diskon').val()));
+                    });
+                })
+                .fail(errors => {
+                    alert('Tidak dapat menyimpan data');
+                    return;
+                });
+        });
 
         $('.datepicker').datepicker({
             format: 'yyyy-mm-dd',

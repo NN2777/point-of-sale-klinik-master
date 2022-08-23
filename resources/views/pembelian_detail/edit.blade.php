@@ -134,8 +134,8 @@ Transaksi Pembelian
                             <div class="form-group row">
                                 <label for="carabayar" class="col-lg-2 control-label">Cara Pembayaran</label>
                                 <div class="col-lg-8">
-                                    <input type="radio" name="status" value="Tunai" checked>Tunai
-                                    <input type="radio" name="status" value="Kredit">Kredit
+                                    <input type="radio" name="status" value="Tunai"  {{ $pembelian->status == 'Tunai' ? 'checked' : ''}}>Tunai
+                                    <input type="radio" name="status" value="Kredit" {{ $pembelian->status == 'Kredit' ? 'checked' : ''}}>Kredit
                                 </div>
                             </div>
                             <div class="form-group row">
@@ -214,7 +214,7 @@ Transaksi Pembelian
                 paginate: false
             })
             .on('draw.dt', function() {
-                loadForm($('#diskon').val(), $('ppn').val());
+                loadForm($('#diskon').val(), $('#ppn').val());
             });
         table2 = $('.table-produk').DataTable();
 
@@ -311,7 +311,7 @@ Transaksi Pembelian
         $.post('{{ route('pembelian_detail.store') }}', $('.form-produk').serialize())
             .done(response => {
                 $('#kode_produk').focus();
-                table.ajax.reload(() => loadForm($('#diskon').val(), $('ppn').val()));
+                table.ajax.reload(() => loadForm($('#diskon').val(), $('#ppn').val()));
             })
             .fail(errors => {
                 alert('Tidak dapat menyimpan data');
@@ -326,7 +326,7 @@ Transaksi Pembelian
                     '_method': 'delete'
                 })
                 .done((response) => {
-                    table.ajax.reload(() => loadForm($('#diskon').val(), $('ppn').val()));
+                    table.ajax.reload(() => loadForm($('#diskon').val(), $('#ppn').val()));
                 })
                 .fail((errors) => {
                     alert('Tidak dapat menghapus data');
