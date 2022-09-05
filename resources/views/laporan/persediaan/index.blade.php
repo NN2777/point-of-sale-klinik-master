@@ -19,6 +19,7 @@
         <div class="box">
             <div class="box-header with-border">
                 <a href="{{ route('persediaan.export_pdf', [$tanggal]) }}" target="_blank" class="btn btn-success btn-xs btn-flat"><i class="fa fa-file-excel-o"></i> Export PDF</a>
+                <a href="{{ route('persediaan.export_excel', [$tanggal]) }}" target="_blank" class="btn btn-success btn-xs btn-flat"><i class="fa fa-file-excel-o"></i> Export Excel</a>
             </div>
             <div class="box-body table-responsive">
                 <table class="table table-stiped table-bordered">

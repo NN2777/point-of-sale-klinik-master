@@ -1,10 +1,12 @@
 <?php
 
 namespace App\Http\Controllers;
+
+use App\Exports\ExportLabaRugi;
 use App\Models\Pembelian;
-use App\Models\Pengeluaran;
 use App\Models\Penjualan;
 use Illuminate\Http\Request;
+use Maatwebsite\Excel\Facades\Excel;
 use PDF;
 
 
@@ -33,12 +35,12 @@ class LaporanLabaRugiController extends Controller
         $total_pendapatan = 0;
 
         while (strtotime($awal) <= strtotime($akhir)) {
-            $tanggal = $awal;
             $awal = date('Y-m-d', strtotime("+1 day", strtotime($awal)));
+            $tanggal = $awal;
 
             $total_penjualan = Penjualan::where('tanggal', 'LIKE', "%$tanggal%")->sum('bayar');
             $total_pembelian = Pembelian::where('tanggal', 'LIKE', "%$tanggal%")->sum('bayar');
-            $total_pengeluaran = Pengeluaran::where('tanggal', 'LIKE', "%$tanggal%")->sum('nominal');
+            $total_pengeluaran = 0;
 
             $pendapatan = $total_penjualan - $total_pembelian - $total_pengeluaran;
             $total_pendapatan += $pendapatan;
@@ -48,7 +50,6 @@ class LaporanLabaRugiController extends Controller
             $row['tanggal'] = tanggal_indonesia($tanggal, false);
             $row['penjualan'] = format_uang($total_penjualan);
             $row['pembelian'] = format_uang($total_pembelian);
-            $row['pengeluaran'] = format_uang($total_pengeluaran);
             $row['pendapatan'] = format_uang($pendapatan);
 
             $data[] = $row;
@@ -58,8 +59,7 @@ class LaporanLabaRugiController extends Controller
             'DT_RowIndex' => '',
             'tanggal' => '',
             'penjualan' => '',
-            'pembelian' => '',
-            'pengeluaran' => 'Total Pendapatan',
+            'pembelian' => 'Total Pendapatan',
             'pendapatan' => format_uang($total_pendapatan),
         ];
 
@@ -82,5 +82,12 @@ class LaporanLabaRugiController extends Controller
         $pdf->setPaper('a4', 'potrait');
         
         return $pdf->stream('Laporan-pendapatan-'. date('Y-m-d-his') .'.pdf');
+    }
+
+    public function exportExcel($awal, $akhir){
+        $data = $this->getData($awal, $akhir);
+        $export = new ExportLabaRugi([$data]);
+
+        return Excel::download($export, 'laba_rugi.xlsx');
     }
 }

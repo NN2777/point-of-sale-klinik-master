@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\ExportNota;
+use App\Exports\ExportPenjualan;
 use App\Models\Penjualan;
 use App\Models\PenjualanDetail;
 use Illuminate\Http\Request;
+use Maatwebsite\Excel\Facades\Excel;
 use PDF;
 
 class LaporanPenjualanController extends Controller
@@ -47,6 +50,7 @@ class LaporanPenjualanController extends Controller
             $row['DT_RowIndex'] = ++$no;
             $row['tanggal'] = tanggal_indonesia($jual->tanggal, false);
             $row['member'] = $jual->member->nama ?? '';
+            $row['dokter'] = $jual->id_dokter->nama ?? '';
             $row['total_harga'] =  'Rp.' . format_uang($jual->total_harga);
             $row['diskon'] = 'Rp.' . format_uang($jual->diskon * ($jual->total_harga)/100);
             $row['ppn'] = 'Rp.' . format_uang($jual->ppn * ($jual->total_harga)/100);
@@ -61,6 +65,7 @@ class LaporanPenjualanController extends Controller
             'DT_RowIndex' => '',
             'tanggal' => 'Total',
             'member' => '',
+            'dokter' => '',
             'total_harga' => 'Rp.' . format_uang($total_harga),
             'diskon' => 'Rp.' . format_uang($total_diskon),
             'ppn' => 'Rp.' . format_uang($total_ppn),
@@ -130,6 +135,7 @@ class LaporanPenjualanController extends Controller
             $row['DT_RowIndex'] = ++$no;
             $row['tanggal'] = tanggal_indonesia($jual->tanggal, false);
             $row['member'] = $jual->member->nama ?? '';
+            $row['dokter'] = $jual->id_dokter->nama ?? '';
             $row['total_harga'] =  'Rp.' . format_uang($jual->total_harga);
             $row['diskon'] = 'Rp.' . format_uang($jual->diskon * ($jual->total_harga)/100);
             $row['ppn'] = 'Rp.' . format_uang($jual->ppn * ($jual->total_harga)/100);
@@ -144,6 +150,7 @@ class LaporanPenjualanController extends Controller
             'DT_RowIndex' => '',
             'tanggal' => 'Total',
             'member' => '',
+            'dokter' => '',
             'total_harga' => 'Rp.' . format_uang($total_harga),
             'diskon' => 'Rp.' . format_uang($total_diskon),
             'ppn' => 'Rp.' . format_uang($total_ppn),
@@ -213,6 +220,7 @@ class LaporanPenjualanController extends Controller
             $row['DT_RowIndex'] = ++$no;
             $row['tanggal'] = tanggal_indonesia($jual->tanggal, false);
             $row['member'] = $jual->member->nama ?? '';
+            $row['dokter'] = $jual->id_dokter->nama ?? '';
             $row['total_harga'] =  'Rp.' . format_uang($jual->total_harga);
             $row['diskon'] = 'Rp.' . format_uang($jual->diskon * ($jual->total_harga)/100);
             $row['ppn'] = 'Rp.' . format_uang($jual->ppn * ($jual->total_harga)/100);
@@ -227,6 +235,7 @@ class LaporanPenjualanController extends Controller
             'DT_RowIndex' => '',
             'tanggal' => 'Total',
             'member' => '',
+            'dokter' => '',
             'total_harga' => 'Rp.' . format_uang($total_harga),
             'diskon' => 'Rp.' . format_uang($total_diskon),
             'ppn' => 'Rp.' . format_uang($total_ppn),
@@ -282,6 +291,7 @@ class LaporanPenjualanController extends Controller
             $row = array();
             $row['DT_RowIndex'] = "";
             $row['nama_obat'] = "";
+            $row['no_batch'] = "";
             $row['quantity'] = "";
             $row['harga_satuan'] = "";
             $row['diskon_item'] = "";
@@ -292,6 +302,7 @@ class LaporanPenjualanController extends Controller
             $data[] = [
                 'DT_RowIndex' => '',
                 'nama_obat' => 'Kode Nota: ' . $jual->id_penjualan,
+                'no_batch' => '',
                 'quantity' =>  'Tanggal: ' .$jual->tanggal,
                 'harga_satuan' => '',
                 'diskon_item' => '',
@@ -299,18 +310,18 @@ class LaporanPenjualanController extends Controller
             ];
 
             $produk= PenjualanDetail::with('produk')->where('id_penjualan', $jual->id_penjualan)->get();
-            $total_pembelian_nota = 0;
+            $total_penjualan_nota = 0;
             $no = 0;
             foreach($produk as $barang){
-                $total_pembelian_nota += $barang->subtotal - ($jual->diskon * ($jual->total_harga)) / 100 + ($beli->ppn * ($beli->total_harga) / 100);
+                $total_penjualan_nota += $barang->subtotal - ($jual->diskon * ($jual->total_harga)) / 100 + ($jual->ppn * ($jual->total_harga) / 100);
                 $data[] = [
                     'DT_RowIndex' => ++$no,
                     'nama_obat' => $barang->produk->nama_produk,
                     'no_batch' => '',
                     'quantity' => $barang->jumlah,
-                    'harga_satuan' => format_uang($barang->harga_beli),
+                    'harga_satuan' => format_uang($barang->harga_jual),
                     'diskon_item' => $barang->produk->diskon,
-                    'total_bayar' => format_uang($barang->harga_beli * $barang->jumlah),
+                    'total_bayar' => format_uang($barang->harga_jual * $barang->jumlah),
                 ];
             }
 
@@ -341,7 +352,7 @@ class LaporanPenjualanController extends Controller
                 'quantity' => '',
                 'harga_satuan' => '',
                 'diskon_item' => 'Subtotal Nota',
-                'total_bayar' => format_uang($total_pembelian_nota),
+                'total_bayar' => format_uang($total_penjualan_nota),
             ];
             // dd($produk);
         }
@@ -364,6 +375,44 @@ class LaporanPenjualanController extends Controller
         return datatables()
             ->of($data)
             ->make(true);
+    }
+
+    public function exportNotaPDF($awal, $akhir)
+    {
+        $data = $this->getDataNota($awal, $akhir);
+        $pdf  = PDF::loadView('laporan.penjualan.notapdf', compact('awal', 'akhir', 'data'));
+        $pdf->setPaper('a4', 'potrait');
+
+        return $pdf->stream('Laporan-penjualan-' . date('Y-m-d-his') . '.pdf');
+    }
+
+
+    public function exportExcel($awal, $akhir){
+        $data = $this->getData($awal, $akhir);
+        $export = new ExportPenjualan([$data]);
+
+        return Excel::download($export, 'penjualan_total.xlsx');
+    }
+
+    public function exportTunaiExcel($awal, $akhir){
+        $data = $this->getDataTunai($awal, $akhir);
+        $export = new ExportPenjualan([$data]);
+
+        return Excel::download($export, 'penjualan_tunai.xlsx');
+    }
+
+    public function exportKreditExcel($awal, $akhir){
+        $data = $this->getDataKredit($awal, $akhir);
+        $export = new ExportPenjualan([$data]);
+
+        return Excel::download($export, 'penjualan_kredit.xlsx');
+    }
+
+    public function exportNotaExcel($awal, $akhir){
+        $data = $this->getDataNota($awal, $akhir);
+        $export = new ExportNota([$data]);
+
+        return Excel::download($export, 'penjualan_nota.xlsx');
     }
 
 }

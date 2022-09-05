@@ -2,10 +2,10 @@
 
 namespace App\Imports;
 
-use App\Models\kategori;
+use App\Models\Pembelian;
 use Maatwebsite\Excel\Concerns\ToModel;
 
-class KategoriImport implements ToModel
+class ImportPembelian implements ToModel
 {
     /**
     * @param array $row
@@ -14,8 +14,8 @@ class KategoriImport implements ToModel
     */
     public function model(array $row)
     {
-        return new kategori([
-            'name' => $row[1],
+        return new Pembelian([
+            //
         ]);
     }
 }

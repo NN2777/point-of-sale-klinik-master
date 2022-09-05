@@ -2,10 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\ExportPembelian;
+use App\Exports\ExportNota;
 use Illuminate\Http\Request;
 use App\Models\Pembelian;
 use App\Models\PembelianDetail;
 use PDF;
+use Maatwebsite\Excel\Facades\Excel;
 
 class LaporanPembelianController extends Controller
 {
@@ -45,6 +48,7 @@ class LaporanPembelianController extends Controller
             $total_ppn += $beli->ppn * ($beli->total_harga) / 100;
             $row = array();
             $row['DT_RowIndex'] = ++$no;
+            $row['no_faktur'] = $beli->no_faktur;
             $row['tanggal'] = tanggal_indonesia($beli->tanggal, false);
             $row['supplier'] = $beli->supplier->nama;
             $row['total_harga'] =  'Rp.' . format_uang($beli->total_harga);
@@ -59,6 +63,7 @@ class LaporanPembelianController extends Controller
 
         $data[] = [
             'DT_RowIndex' => '',
+            'no_faktur' => '',
             'tanggal' => '',
             'supplier' => 'Total',
             'total_harga' => 'Rp.' . format_uang($total_harga),
@@ -148,6 +153,7 @@ class LaporanPembelianController extends Controller
             $total_ppn += $beli->ppn * ($beli->total_harga) / 100;
             $row = array();
             $row['DT_RowIndex'] = ++$no;
+            $row['no_faktur'] = $beli->no_faktur;
             $row['tanggal'] = tanggal_indonesia($beli->tanggal, false);
             $row['supplier'] = $beli->supplier->nama;
             $row['total_harga'] =  'Rp.' . format_uang($beli->total_harga);
@@ -162,6 +168,7 @@ class LaporanPembelianController extends Controller
 
         $data[] = [
             'DT_RowIndex' => '',
+            'no_faktur' => '',
             'tanggal' => '',
             'supplier' => 'Total',
             'total_harga' => 'Rp.' . format_uang($total_harga),
@@ -216,6 +223,7 @@ class LaporanPembelianController extends Controller
             $total_ppn += $beli->ppn * ($beli->total_harga) / 100;
             $row = array();
             $row['DT_RowIndex'] = ++$no;
+            $row['no_faktur'] = $beli->no_faktur;
             $row['tanggal'] = tanggal_indonesia($beli->tanggal, false);
             $row['supplier'] = $beli->supplier->nama;
             $row['total_harga'] =  'Rp.' . format_uang($beli->total_harga);
@@ -230,6 +238,7 @@ class LaporanPembelianController extends Controller
 
         $data[] = [
             'DT_RowIndex' => '',
+            'no_faktur' => '',
             'tanggal' => '',
             'supplier' => 'Total',
             'total_harga' => 'Rp.' . format_uang($total_harga),
@@ -363,7 +372,14 @@ class LaporanPembelianController extends Controller
             ->make(true);
     }
 
+    public function exportNotaPDF($awal, $akhir)
+    {
+        $data = $this->getDataNota($awal, $akhir);
+        $pdf  = PDF::loadView('laporan.pembelian.notapdf', compact('awal', 'akhir', 'data'));
+        $pdf->setPaper('a4', 'potrait');
 
+        return $pdf->stream('Laporan-pembelian-' . date('Y-m-d-his') . '.pdf');
+    }
 
     public function exportPDF($awal, $akhir)
     {
@@ -390,5 +406,33 @@ class LaporanPembelianController extends Controller
         $pdf->setPaper('a4', 'potrait');
 
         return $pdf->stream('Laporan-pembelian-' . date('Y-m-d-his') . '.pdf');
+    }
+
+    public function exportExcel($awal, $akhir){
+        $data = $this->getData($awal, $akhir);
+        $export = new ExportPembelian([$data]);
+
+        return Excel::download($export, 'pembelian_total.xlsx');
+    }
+
+    public function exportTunaiExcel($awal, $akhir){
+        $data = $this->getDataTunai($awal, $akhir);
+        $export = new ExportPembelian([$data]);
+
+        return Excel::download($export, 'pembelian_tunai.xlsx');
+    }
+
+    public function exportKreditExcel($awal, $akhir){
+        $data = $this->getDataKredit($awal, $akhir);
+        $export = new ExportPembelian([$data]);
+
+        return Excel::download($export, 'pembelian_kredit.xlsx');
+    }
+
+    public function exportNotaExcel($awal, $akhir){
+        $data = $this->getDataNota($awal, $akhir);
+        $export = new ExportNota([$data]);
+
+        return Excel::download($export, 'penjualan_nota.xlsx');
     }
 }

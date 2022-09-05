@@ -1,7 +1,7 @@
 @extends('layouts.master')
 
 @section('title')
-    Laporan Pembelian Kredit {{ tanggal_indonesia($tanggalAwal, false) }} s/d {{ tanggal_indonesia($tanggalAkhir, false) }}
+    Laporan Nota {{ tanggal_indonesia($tanggalAwal, false) }} s/d {{ tanggal_indonesia($tanggalAkhir, false) }}
 @endsection
 
 @push('css')
@@ -19,22 +19,19 @@
         <div class="box">
             <div class="box-header with-border">
                 <button onclick="updatePeriode()" class="btn btn-info btn-xs btn-flat"><i class="fa fa-plus-circle"></i> Ubah Periode</button>
-                <a href="{{ route('pembeliankredit.export_pdf', [$tanggalAwal, $tanggalAkhir]) }}" target="_blank" class="btn btn-success btn-xs btn-flat"><i class="fa fa-file-excel-o"></i> Export PDF</a>
-                <a href="{{ route('pembeliankredit.export_excel', [$tanggalAwal, $tanggalAkhir]) }}" target="_blank" class="btn btn-success btn-xs btn-flat"><i class="fa fa-file-excel-o"></i> Export Excel</a>
+                <a href="{{ route('penjualannota.export_pdf', [$tanggalAwal, $tanggalAkhir]) }}" target="_blank" class="btn btn-success btn-xs btn-flat"><i class="fa fa-file-excel-o"></i> Export PDF</a>
+                <a href="{{ route('penjualannota.export_excel', [$tanggalAwal, $tanggalAkhir]) }}" target="_blank" class="btn btn-success btn-xs btn-flat"><i class="fa fa-file-excel-o"></i> Export Excel</a>
             </div>
             <div class="box-body table-responsive">
                 <table class="table table-stiped table-bordered">
                     <thead>
                         <th width="5%">No</th>
-                        <th>No Faktur</th>
-                        <th>Tanggal</th>
-                        <th>Supplier</th>
-                        <th>Total Harga</th>
-                        <th>Diskon</th>
-                        <th>PPN</th>
-                        <th>Total Bayar</th>
-                        <th>Cara Bayar</th>
-                        <th>Jatuh Tempo</th>
+                        <th>Nama Obat</th>
+                        <th>No Batch</th>
+                        <th>Quantity</th>
+                        <th>Harga Satuan</th>
+                        <th>Potongan</th>
+                        <th>Total</th>
                     </thead>
                 </table>
             </div>
@@ -42,7 +39,7 @@
     </div>
 </div>
 
-@includeIf('laporan.pembelian.kreditform')
+@includeIf('laporan.penjualan.notaform')
 @endsection
 
 @push('scripts')
@@ -57,19 +54,16 @@
             serverSide: true,
             autoWidth: false,
             ajax: {
-                url: '{{ route("pembeliankredit.data", [$tanggalAwal, $tanggalAkhir]) }}',
+                url: '{{ route("penjualannota.data", [$tanggalAwal, $tanggalAkhir]) }}',
             },
             columns: [
                 {data: 'DT_RowIndex', searchable: false, sortable: false},
-                {data: 'no_faktur'},
-                {data: 'tanggal'},
-                {data: 'supplier'},
-                {data: 'total_harga'},
-                {data: 'diskon'},
-                {data: 'ppn'},
+                {data: 'nama_obat'},
+                {data: 'no_batch'},
+                {data: 'quantity'},
+                {data: 'harga_satuan'},
+                {data: 'diskon_item'},
                 {data: 'total_bayar'},
-                {data: 'status'},
-                {data: 'jatuh_tempo'},
             ],
             dom: 'Brt',
             bSort: false,

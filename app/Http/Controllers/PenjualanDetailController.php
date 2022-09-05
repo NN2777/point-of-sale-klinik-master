@@ -6,7 +6,6 @@ use App\Models\Member;
 use App\Models\Penjualan;
 use App\Models\PenjualanDetail;
 use App\Models\Produk;
-use App\Models\Setting;
 use App\Models\Dokter;
 use Illuminate\Http\Request;
 
@@ -36,6 +35,58 @@ class PenjualanDetailController extends Controller
         }
     }
 
+    // public function data($id)
+    // {
+    //     $detail = PenjualanDetail::with('produk')
+    //         ->where('id_penjualan', $id)
+    //         ->get();
+
+    //     $data = array();
+    //     $total = 0;
+    //     $total_item = 0;
+
+    //     foreach ($detail as $item) {
+    //         $row = array();
+    //         $row['kode_produk'] = '<span class="label label-success">'. $item->produk['kode_produk'] .'</span';
+    //         $row['nama_produk'] = $item->produk['nama_produk'];
+    //         $row['harga_jual']  = '<select class="form-control input-sm harga_jual"  data-id="'. $item->id_penjualan_detail .'">
+    //             <option value="'. $item->produk['harga_jual_1'] .'" '. ($item->produk['harga_jual_1'] == $item->harga_jual ? 'selected' : '') .'>Harga 1 : '. $item->produk['harga_jual_1'] .'</option>
+    //             <option value="'. $item->produk['harga_jual_2'] .'" '. ($item->produk['harga_jual_2'] == $item->harga_jual ? 'selected' : '') .'>Harga 2 : '. $item->produk['harga_jual_2'] .'</option>
+    //             <option value="'. $item->produk['harga_jual_3'] .'" '. ($item->produk['harga_jual_3'] == $item->harga_jual ? 'selected' : '') .'>Harga 3 : '. $item->produk['harga_jual_3'] .'</option>
+    //             <option value="'. $item->produk['harga_jual_4'] .'" '. ($item->produk['harga_jual_4'] == $item->harga_jual ? 'selected' : '') .'>Harga 4 : '. $item->produk['harga_jual_4'] .'</option>
+    //         </select>';
+    //         // '.@if(old('country') == $country->id || $country->id == $user->country) selected @endif.'
+    //         // '. $item->produk['harga_jual_1'] == $item->harga_jual ? 'selected' : '' .'
+    //         //'Rp. '. format_uang($item->harga_jual); '<input type="number" class="form-control input-sm quantity" data-id="'. $item->id_penjualan_detail .'" value="'. $item->jumlah .'">'
+    //         $row['jumlah']      = '<input type="number" class="form-control input-sm quantity" data-id="'. $item->id_penjualan_detail .'" value="'. $item->jumlah .'">';
+    //         $row['diskon']      = $item->produk['diskon'] . '%';
+    //         $row['subtotal']    = 'Rp. '. format_uang($item->subtotal);
+    //         $row['aksi']        = '<div class="btn-group">
+    //                                 <button onclick="deleteData(`'. route('transaksi.destroy', $item->id_penjualan_detail) .'`)" class="btn btn-xs btn-danger btn-flat"><i class="fa fa-trash"></i></button>
+    //                             </div>';
+    //         $data[] = $row;
+
+    //         $total += $item->harga_jual * $item->jumlah - (($item->produk['diskon'] * $item->jumlah) / 100 * $item->harga_jual);;
+    //         $total_item += $item->jumlah;
+    //     }
+    //     $data[] = [
+    //         'kode_produk' => '
+    //             <div class="total hide">'. $total .'</div>
+    //             <div class="total_item hide">'. $total_item .'</div>',
+    //         'nama_produk' => '',
+    //         'harga_jual'  => '',
+    //         'jumlah'      => '',
+    //         'diskon'      => '',
+    //         'subtotal'    => '',
+    //         'aksi'        => '',
+    //     ];
+
+    //     return datatables()
+    //         ->of($data)
+    //         ->addIndexColumn()
+    //         ->rawColumns(['aksi', 'kode_produk', 'jumlah','harga_jual'])
+    //         ->make(true);
+    // }
     public function data($id)
     {
         $detail = PenjualanDetail::with('produk')
@@ -45,22 +96,20 @@ class PenjualanDetailController extends Controller
         $data = array();
         $total = 0;
         $total_item = 0;
+        $id_penjualan_details = array();
 
         foreach ($detail as $item) {
             $row = array();
             $row['kode_produk'] = '<span class="label label-success">'. $item->produk['kode_produk'] .'</span';
             $row['nama_produk'] = $item->produk['nama_produk'];
-            $row['harga_jual']  = '<select class="form-control input-sm harga_jual"  data-id="'. $item->id_penjualan_detail .'>
+            $row['harga_jual']  = '<select class="form-control input-sm harga_jual"  data-id="'. $item->id_penjualan_detail .'" id="harga_jual_'. $item->id_penjualan_detail .'">
                 <option value="'. $item->produk['harga_jual_1'] .'">Harga 1 : '. $item->produk['harga_jual_1'] .'</option>
                 <option value="'. $item->produk['harga_jual_1'] .'" '. ($item->produk['harga_jual_1'] == $item->harga_jual ? 'selected' : '') .'>Harga 1 : '. $item->produk['harga_jual_1'] .'</option>
                 <option value="'. $item->produk['harga_jual_2'] .'" '. ($item->produk['harga_jual_2'] == $item->harga_jual ? 'selected' : '') .'>Harga 2 : '. $item->produk['harga_jual_2'] .'</option>
                 <option value="'. $item->produk['harga_jual_3'] .'" '. ($item->produk['harga_jual_3'] == $item->harga_jual ? 'selected' : '') .'>Harga 3 : '. $item->produk['harga_jual_3'] .'</option>
                 <option value="'. $item->produk['harga_jual_4'] .'" '. ($item->produk['harga_jual_4'] == $item->harga_jual ? 'selected' : '') .'>Harga 4 : '. $item->produk['harga_jual_4'] .'</option>
-            </select>';
-            // '.@if(old('country') == $country->id || $country->id == $user->country) selected @endif.'
-            // '. $item->produk['harga_jual_1'] == $item->harga_jual ? 'selected' : '' .'
-            //'Rp. '. format_uang($item->harga_jual); '<input type="number" class="form-control input-sm quantity" data-id="'. $item->id_penjualan_detail .'" value="'. $item->jumlah .'">'
-            $row['jumlah']      = '<input type="number" class="form-control input-sm quantity" data-id="'. $item->id_penjualan_detail .'" value="'. $item->jumlah .'">';
+            </select>';            
+            $row['jumlah']      = '<input type="number" class="form-control input-sm quantity" data-id="'. $item->id_penjualan_detail .'" value="'. $item->jumlah .'" id="quantity_'. $item->id_penjualan_detail .'">';
             $row['diskon']      = $item->produk['diskon'] . '%';
             $row['subtotal']    = 'Rp. '. format_uang($item->subtotal);
             $row['aksi']        = '<div class="btn-group">
@@ -81,8 +130,8 @@ class PenjualanDetailController extends Controller
             'diskon'      => '',
             'subtotal'    => '',
             'aksi'        => '',
-        ];
-
+        ];    
+        
         return datatables()
             ->of($data)
             ->addIndexColumn()

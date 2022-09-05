@@ -4,12 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Laporan Pembelian</title>
+    <title>Laporan Penjualan</title>
 
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
 </head>
 <body>
-    <h3 class="text-center">Laporan Pembelian Berdasarkan Nota</h3>
+    <h3 class="text-center">Laporan Penjualan Berdasarkan Nota</h3>
     <h4 class="text-center">
         Tanggal {{ tanggal_indonesia($awal, false) }}
         s/d
@@ -26,6 +26,7 @@
                 <th>Harga Satuan</th>
                 <th>Potongan</th>
                 <th>Total</th>
+
             </tr>
         </thead>
         <tbody>

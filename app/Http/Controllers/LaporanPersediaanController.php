@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\ExportPersediaan;
 use App\Models\Produk;
 use Illuminate\Http\Request;
+use Maatwebsite\Excel\Facades\Excel;
 use PDF;
 
 class LaporanPersediaanController extends Controller
@@ -67,5 +69,12 @@ class LaporanPersediaanController extends Controller
         $pdf->setPaper('a4', 'potrait');
 
         return $pdf->stream('Laporan-pembelian-' . date('Y-m-d-his') . '.pdf');
+    }
+
+    public function exportExcel(){
+        $data = $this->getData();
+        $export = new ExportPersediaan([$data]);
+
+        return Excel::download($export, 'persediaan.xlsx');
     }
 }

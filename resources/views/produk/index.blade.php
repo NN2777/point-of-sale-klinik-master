@@ -127,7 +127,10 @@
                 $('#modal-form [name=id_kategori]').val(response.id_kategori);
                 $('#modal-form [name=merk]').val(response.merk);
                 $('#modal-form [name=harga_beli]').val(response.harga_beli);
-                $('#modal-form [name=harga_jual]').val(response.harga_jual);
+                $('#modal-form [name=harga_jual_1]').val(response.harga_jual_1);
+                $('#modal-form [name=harga_jual_2]').val(response.harga_jual_2);
+                $('#modal-form [name=harga_jual_3]').val(response.harga_jual_3);
+                $('#modal-form [name=harga_jual_4]').val(response.harga_jual_4);
                 $('#modal-form [name=diskon]').val(response.diskon);
                 $('#modal-form [name=stok]').val(response.stok);
             })

@@ -28,12 +28,11 @@
                     <li class="list-group-item"><a href="{{ route('laporan-penjualan-tunai.index') }}">Laporan Penjualan Tunai</a></li>
                     <li class="list-group-item"><a href="{{ route('laporan-penjualan-kredit.index') }}">Laporan Penjualan Kredit</a></li>
                     <li class="list-group-item"><a href="{{ route('laporan-penjualan.index') }}">Laporan Penjualan Total</a></li>
+                    <li class="list-group-item"><a href="{{ route('laporan-penjualan-nota.index') }}">Laporan Penjualan Nota</a></li>
                     <li class="list-group-item active">Laporan Persediaan</a></li>
                     <li class="list-group-item"><a href="{{ route('laporan-persediaan.index') }}">Laporan Persediaan</a></li>
-                    <li class="list-group-item active">Laporan Laba Rugi</a></li>
-                    <li class="list-group-item">Laporan Laba Rugi</li>
-                    <li class="list-group-item active">Laporan Hutang Piutang</a></li>
-                    <li class="list-group-item">Laporan Hutang Piutang</li>
+                    <li class="list-group-item active">Laporan Laba Rugi</li>
+                    <li class="list-group-item"><a href="{{ route('labarugi.index') }}">Laporan Laba Rugi</a></li>
                 </ul>
             </div>
             <!-- <div class="box-body">
