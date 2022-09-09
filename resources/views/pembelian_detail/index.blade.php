@@ -135,7 +135,7 @@ Transaksi Pembelian
                             <div class="form-group row">
                                 <label for="carabayar" class="col-lg-2 control-label">Cara Pembayaran</label>
                                 <div class="col-lg-8">
-                                    <input type="radio" name="status" value="Tunai">Tunai
+                                    <input type="radio" name="status" value="Tunai" checked>Tunai
                                     <input type="radio" name="status" value="Kredit">Kredit
                                 </div>
                             </div>
