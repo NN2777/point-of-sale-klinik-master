@@ -83,6 +83,7 @@ Transaksi Pembelian
                         <th>Nama</th>
                         <th>Harga</th>
                         <th width="15%">Jumlah</th>
+                        <th width="15%">Diskon</th>
                         <th>Subtotal</th>
                         <th width="15%"><i class="fa fa-cog"></i></th>
                     </thead>
@@ -170,6 +171,7 @@ Transaksi Pembelian
 <script src="{{ asset('/AdminLTE-2/bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js') }}"></script>
 <script>
     let table, table2;
+    let id_pembelian_detail = [];
 
     $(function() {
         $('body').addClass('sidebar-collapse');
@@ -180,7 +182,7 @@ Transaksi Pembelian
                 serverSide: true,
                 autoWidth: false,
                 ajax: {
-                    url: '{{ route('pembelian_detail.data', $pembelian->id_pembelian) }}',
+                    url: '{{ route('pembelian_detail.data', $pembelian) }}',
                 },
                 columns: [{
                         data: 'DT_RowIndex',
@@ -200,6 +202,9 @@ Transaksi Pembelian
                         data: 'jumlah'
                     },
                     {
+                        data: 'diskon'
+                    },
+                    {
                         data: 'subtotal'
                     },
                     {
@@ -210,44 +215,115 @@ Transaksi Pembelian
                 ],
                 dom: 'Brt',
                 bSort: false,
+                paginate: false,
+                initComplete: function () {
+                    $('.quantity').each(function() {
+                        let data = $(this).data('id');
+                        id_pembelian_detail.push(data);
+                    });                    
+                    console.log(id_pembelian_detail);
+                    $.each(id_pembelian_detail, function( index, value ) {  
+                        console.log(value);          
+                        $(document).on('input', `#quantity_${value}`, function() {
+                            let id = $(`#quantity_${value}`).data('id');
+                            let jumlah = parseInt($(`#quantity_${id}`).val());
+                            let diskon = $(`#diskon_${id}`).val();
 
-                paginate: false
+                            if (jumlah < 1) {
+                                $(`#quantity_${id}`).val(1);
+                                alert('Jumlah tidak boleh kurang dari 1');
+                                return;
+                            }
+                            if (jumlah > 10000) {
+                                $(`#quantity_${id}`).val(10000);
+                                alert('Jumlah tidak boleh lebih dari 10000');
+                                return;
+                            }
+
+                            $.post(`{{ url('/pembelian_detail') }}/${id}`, {
+                                    '_token': $('[name=csrf-token]').attr('content'),
+                                    '_method': 'put',
+                                    'jumlah': jumlah,
+                                    'diskon': diskon
+                                })
+                                .done(response => {
+                                    $(this).on('mouseout', function() {
+                                        table.ajax.reload(() => loadForm($('#diskon').val()));
+                                    });
+                                })
+                                .fail(errors => {
+                                    alert('Tidak dapat menyimpan data');
+                                    return;
+                                });                                    
+                        });
+
+                        $(document).on('input', `#diskon_${value}`, function() {
+                            let id = $(`#quantity_${value}`).data('id');
+                            let jumlah = parseInt($(`#quantity_${id}`).val());
+                            let diskon = $(`#diskon_${id}`).val();
+
+                            $.post(`{{ url('/pembelian_detail') }}/${id}`, {
+                                    '_token': $('[name=csrf-token]').attr('content'),
+                                    '_method': 'put',
+                                    'jumlah': jumlah,
+                                    'diskon': diskon
+                                })
+                                .done(response => {
+                                    $(this).on('mouseout', function() {
+                                        table.ajax.reload(() => loadForm($('#diskon').val()));
+                                    });
+                                })
+                                .fail(errors => {
+                                    alert('Tidak dapat menyimpan data');
+                                    return;
+                                });
+                        }); 
+                    });  
+                }
             })
             .on('draw.dt', function() {
-                loadForm($('#diskon').val(), $('#ppn').val());
-            });
+                loadForm($('#diskon').val());
+                setTimeout(() => {
+                    $('#diterima').trigger('input');
+                }, 300);                
+            })
+            // })
+            // .on('draw.dt', function() {
+            //     loadForm($('#diskon').val(), $('#ppn').val());
+            // });
+
         table2 = $('.table-produk').DataTable();
 
-        $(document).on('input', '.quantity', function() {
-            let id = $(this).data('id');
-            let jumlah = parseInt($(this).val());
+        // $(document).on('input', '.quantity', function() {
+        //     let id = $(this).data('id');
+        //     let jumlah = parseInt($(this).val());
 
-            if (jumlah < 1) {
-                $(this).val(1);
-                alert('Jumlah tidak boleh kurang dari 1');
-                return;
-            }
-            if (jumlah > 10000) {
-                $(this).val(10000);
-                alert('Jumlah tidak boleh lebih dari 10000');
-                return;
-            }
+        //     if (jumlah < 1) {
+        //         $(this).val(1);
+        //         alert('Jumlah tidak boleh kurang dari 1');
+        //         return;
+        //     }
+        //     if (jumlah > 10000) {
+        //         $(this).val(10000);
+        //         alert('Jumlah tidak boleh lebih dari 10000');
+        //         return;
+        //     }
 
-            $.post(`{{ url('/pembelian_detail') }}/${id}`, {
-                    '_token': $('[name=csrf-token]').attr('content'),
-                    '_method': 'put',
-                    'jumlah': jumlah
-                })
-                .done(response => {
-                    $(this).on('mouseout', function() {
-                        table.ajax.reload(() => loadForm($('#diskon').val(), $('#ppn').val()));
-                    });
-                })
-                .fail(errors => {
-                    alert('Tidak dapat menyimpan data');
-                    return;
-                });
-        });
+        //     $.post(`{{ url('/pembelian_detail') }}/${id}`, {
+        //             '_token': $('[name=csrf-token]').attr('content'),
+        //             '_method': 'put',
+        //             'jumlah': jumlah
+        //         })
+        //         .done(response => {
+        //             $(this).on('mouseout', function() {
+        //                 table.ajax.reload(() => loadForm($('#diskon').val(), $('#ppn').val()));
+        //             });
+        //         })
+        //         .fail(errors => {
+        //             alert('Tidak dapat menyimpan data');
+        //             return;
+        //         });
+        // });
 
         $('.datepicker').datepicker({
             format: 'yyyy-mm-dd',
@@ -326,7 +402,7 @@ Transaksi Pembelian
                     '_method': 'delete'
                 })
                 .done((response) => {
-                    table.ajax.reload(() => loadForm($('#diskon').val(), $('#ppn').val()));
+                    table.ajax.reload(() => loadForm($('#diskon').val(), $('ppn').val()));
                 })
                 .fail((errors) => {
                     alert('Tidak dapat menghapus data');

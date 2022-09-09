@@ -2,13 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Exports\ExportPembelian;
 use Illuminate\Http\Request;
 use App\Models\Pembelian;
 use App\Models\PembelianDetail;
 use App\Models\Produk;
 use App\Models\Supplier;
-use Maatwebsite\Excel\Facades\Excel;
 
 class PembelianController extends Controller
 {

@@ -301,7 +301,7 @@ class LaporanPenjualanController extends Controller
 
             $data[] = [
                 'DT_RowIndex' => '',
-                'nama_obat' => 'Kode Nota: ' . $jual->id_penjualan,
+                'nama_obat' => 'Kode Nota: ' . $jual->no_faktur,
                 'no_batch' => '',
                 'quantity' =>  'Tanggal: ' .$jual->tanggal,
                 'harga_satuan' => '',

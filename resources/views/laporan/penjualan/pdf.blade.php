@@ -20,6 +20,7 @@
         <thead>
             <tr>
                 <th width="5%">No</th>
+                <th>No Faktur</th
                 <th>Tanggal</th>
                 <th>Supplier</th>
                 <th>Total Harga</th>

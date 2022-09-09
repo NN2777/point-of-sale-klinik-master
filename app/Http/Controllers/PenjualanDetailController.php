@@ -103,7 +103,6 @@ class PenjualanDetailController extends Controller
             $row['kode_produk'] = '<span class="label label-success">'. $item->produk['kode_produk'] .'</span';
             $row['nama_produk'] = $item->produk['nama_produk'];
             $row['harga_jual']  = '<select class="form-control input-sm harga_jual"  data-id="'. $item->id_penjualan_detail .'" id="harga_jual_'. $item->id_penjualan_detail .'">
-                <option value="'. $item->produk['harga_jual_1'] .'">Harga 1 : '. $item->produk['harga_jual_1'] .'</option>
                 <option value="'. $item->produk['harga_jual_1'] .'" '. ($item->produk['harga_jual_1'] == $item->harga_jual ? 'selected' : '') .'>Harga 1 : '. $item->produk['harga_jual_1'] .'</option>
                 <option value="'. $item->produk['harga_jual_2'] .'" '. ($item->produk['harga_jual_2'] == $item->harga_jual ? 'selected' : '') .'>Harga 2 : '. $item->produk['harga_jual_2'] .'</option>
                 <option value="'. $item->produk['harga_jual_3'] .'" '. ($item->produk['harga_jual_3'] == $item->harga_jual ? 'selected' : '') .'>Harga 3 : '. $item->produk['harga_jual_3'] .'</option>

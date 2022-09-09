@@ -27,6 +27,7 @@ class ExportPembelian implements FromArray, WithHeadings, ShouldAutoSize
     {
         return [
             'No',
+            'No Faktur',
             'Tanggal',
             'Supplier',
             'Total Harga',

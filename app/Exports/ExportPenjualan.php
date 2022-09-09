@@ -28,6 +28,7 @@ class ExportPenjualan implements FromArray, WithHeadings, ShouldAutoSize
     {
         return [
             'No',
+            'No Faktur',
             'Tanggal',
             'ID Member',
             'ID Dokter',

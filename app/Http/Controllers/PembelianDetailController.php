@@ -39,14 +39,15 @@ class PembelianDetailController extends Controller
             $row['kode_produk'] = '<span class="label label-success">' . $item->produk['kode_produk'] . '</span';
             $row['nama_produk'] = $item->produk['nama_produk'];
             $row['harga_beli']  = 'Rp. ' . format_uang($item->harga_beli);
-            $row['jumlah']      = '<input type="number" class="form-control input-sm quantity" data-id="' . $item->id_pembelian_detail . '" value="' . $item->jumlah . '">';
+            $row['jumlah']      = '<input type="number" class="form-control input-sm quantity" data-id="'. $item->id_pembelian_detail .'" value="'. $item->jumlah .'" id="quantity_'. $item->id_pembelian_detail .'">';
+            $row['diskon']      = '<input type="number" class="form-control input-sm diskon" data-id="' . $item->id_pembelian_detail . '" value="' . $item->diskon . '" id="diskon_'. $item->id_pembelian_detail .'">';
             $row['subtotal']    = 'Rp. ' . format_uang($item->subtotal);
             $row['aksi']        = '<div class="btn-group">
                                     <button onclick="deleteData(`' . route('pembelian_detail.destroy', $item->id_pembelian_detail) . '`)" class="btn btn-xs btn-danger btn-flat"><i class="fa fa-trash"></i></button>
                                 </div>';
             $data[] = $row;
 
-            $total += $item->harga_beli * $item->jumlah;
+            $total += $item->harga_beli * $item->jumlah - (($item->diskon/100)* $item->harga_beli *$item->jumlah);
             $total_item += $item->jumlah;
         }
         $data[] = [
@@ -56,6 +57,7 @@ class PembelianDetailController extends Controller
             'nama_produk' => '',
             'harga_beli'  => '',
             'jumlah'      => '',
+            'diskon'      => '',
             'subtotal'    => '',
             'aksi'        => '',
         ];
@@ -63,7 +65,7 @@ class PembelianDetailController extends Controller
         return datatables()
             ->of($data)
             ->addIndexColumn()
-            ->rawColumns(['aksi', 'kode_produk', 'jumlah'])
+            ->rawColumns(['aksi', 'kode_produk', 'jumlah','diskon'])
             ->make(true);
     }
 
@@ -79,6 +81,7 @@ class PembelianDetailController extends Controller
         $detail->id_produk = $produk->id_produk;
         $detail->harga_beli = $produk->harga_beli;
         $detail->jumlah = 1;
+        $detail->diskon = 0;
         $detail->subtotal = $produk->harga_beli;
         $detail->save();
 
@@ -88,8 +91,9 @@ class PembelianDetailController extends Controller
     public function update(Request $request, $id)
     {
         $detail = PembelianDetail::find($id);
+        $detail->diskon = $request->diskon;
         $detail->jumlah = $request->jumlah;
-        $detail->subtotal = $detail->harga_beli * $request->jumlah;
+        $detail->subtotal = $detail->harga_beli * $request->jumlah - (($request->diskon/100) * $detail->harga_beli) * $request->jumlah;
         $detail->update();
     }
 
@@ -111,7 +115,7 @@ class PembelianDetailController extends Controller
             'bayarrp' => format_uang($bayar),
             'terbilang' => ucwords(terbilang($bayar) . ' Rupiah')
         ];
-
+        
         // dd($diskon, $ppn, $total, $bayar);
 
         return response()->json($data);

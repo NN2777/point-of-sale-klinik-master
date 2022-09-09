@@ -193,7 +193,7 @@ Transaksi Penjualan
 @push('scripts')
 <script src="{{ asset('/AdminLTE-2/bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js') }}"></script>
 <script>
-    let table, table2;
+    let table, table2, table3, table4;
     let id_penjualan_detail = [];
 
     $(function() {
@@ -310,7 +310,9 @@ Transaksi Penjualan
                     $('#diterima').trigger('input');
                 }, 300);                
             })
-        table2 = $('.table-produk').DataTable();                      
+        table2 = $('.table-produk').DataTable();  
+        table3 = $('.table-member').DataTable(); 
+        table4 = $('.table-dokter').DataTable();                   
 
         $('.datepicker').datepicker({
             format: 'yyyy-mm-dd',

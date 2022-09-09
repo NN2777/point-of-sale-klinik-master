@@ -296,7 +296,7 @@ class LaporanPembelianController extends Controller
 
             $data[] = [
                 'DT_RowIndex' => '',
-                'nama_obat' => 'Kode Nota: ' . $beli->id_pembelian,
+                'nama_obat' => 'Kode Nota: ' . $beli->no_faktur,
                 'no_batch' =>  'Tanggal: ' .$beli->tanggal,
                 'quantity' => '',
                 'harga_satuan' => '',
