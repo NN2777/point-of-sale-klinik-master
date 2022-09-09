@@ -433,6 +433,6 @@ class LaporanPembelianController extends Controller
         $data = $this->getDataNota($awal, $akhir);
         $export = new ExportNota([$data]);
 
-        return Excel::download($export, 'penjualan_nota.xlsx');
+        return Excel::download($export, 'pembelian_nota.xlsx');
     }
 }

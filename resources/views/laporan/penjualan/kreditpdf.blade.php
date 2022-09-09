@@ -20,14 +20,15 @@
         <thead>
             <tr>
                 <th width="5%">No</th>
-                <th>No Faktur</th>
+                        <th>No Faktur</th>
                         <th>Tanggal</th>
-                        <th>Supplier</th>
+                        <th>Member</th>
+                        <th>Dokter</th>
                         <th>Total Harga</th>
                         <th>Diskon</th>
                         <th>PPN</th>
                         <th>Total Bayar</th>
-                        <th>Cara Bayar</th>
+                        <th>Cara Pembayaran</th>
                         <th>Jatuh Tempo</th>
             </tr>
         </thead>

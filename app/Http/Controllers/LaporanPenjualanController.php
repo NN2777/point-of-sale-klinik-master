@@ -48,9 +48,10 @@ class LaporanPenjualanController extends Controller
             $total_ppn += $jual->ppn * ($jual->total_harga)/100;
             $row = array();
             $row['DT_RowIndex'] = ++$no;
+            $row['no_faktur'] = $jual->no_faktur;
             $row['tanggal'] = tanggal_indonesia($jual->tanggal, false);
             $row['member'] = $jual->member->nama ?? '';
-            $row['dokter'] = $jual->id_dokter->nama ?? '';
+            $row['dokter'] = $jual->dokter->nama ?? '';
             $row['total_harga'] =  'Rp.' . format_uang($jual->total_harga);
             $row['diskon'] = 'Rp.' . format_uang($jual->diskon * ($jual->total_harga)/100);
             $row['ppn'] = 'Rp.' . format_uang($jual->ppn * ($jual->total_harga)/100);
@@ -63,6 +64,7 @@ class LaporanPenjualanController extends Controller
 
         $data[] = [
             'DT_RowIndex' => '',
+            'no_faktur' => '',
             'tanggal' => 'Total',
             'member' => '',
             'dokter' => '',
@@ -133,9 +135,10 @@ class LaporanPenjualanController extends Controller
             $total_ppn += $jual->ppn * ($jual->total_harga)/100;
             $row = array();
             $row['DT_RowIndex'] = ++$no;
+            $row['no_faktur'] = $jual->no_faktur;
             $row['tanggal'] = tanggal_indonesia($jual->tanggal, false);
             $row['member'] = $jual->member->nama ?? '';
-            $row['dokter'] = $jual->id_dokter->nama ?? '';
+            $row['dokter'] = $jual->dokter->nama ?? '';
             $row['total_harga'] =  'Rp.' . format_uang($jual->total_harga);
             $row['diskon'] = 'Rp.' . format_uang($jual->diskon * ($jual->total_harga)/100);
             $row['ppn'] = 'Rp.' . format_uang($jual->ppn * ($jual->total_harga)/100);
@@ -148,14 +151,15 @@ class LaporanPenjualanController extends Controller
 
         $data[] = [
             'DT_RowIndex' => '',
+            'no_faktur' => '',
             'tanggal' => 'Total',
             'member' => '',
             'dokter' => '',
             'total_harga' => 'Rp.' . format_uang($total_harga),
             'diskon' => 'Rp.' . format_uang($total_diskon),
             'ppn' => 'Rp.' . format_uang($total_ppn),
-            'status' => '',
             'total_bayar' => 'Rp.' . format_uang($total_penjualan),
+            'status' => '',
             'jatuh_tempo' => '',
         ];
         // dd($data);
@@ -171,7 +175,7 @@ class LaporanPenjualanController extends Controller
             ->make(true);
     }
     
-    public function exporTunaitPDF($awal, $akhir)
+    public function exportTunaiPDF($awal, $akhir)
     {
         $data = $this->getDataTunai($awal, $akhir);
         $pdf  = PDF::loadView('laporan.penjualan.tunaipdf', compact('awal', 'akhir', 'data'));
@@ -218,9 +222,10 @@ class LaporanPenjualanController extends Controller
             $total_ppn += $jual->ppn * ($jual->total_harga)/100;
             $row = array();
             $row['DT_RowIndex'] = ++$no;
+            $row['no_faktur'] = $jual->no_faktur;
             $row['tanggal'] = tanggal_indonesia($jual->tanggal, false);
             $row['member'] = $jual->member->nama ?? '';
-            $row['dokter'] = $jual->id_dokter->nama ?? '';
+            $row['dokter'] = $jual->dokter->nama ?? '';
             $row['total_harga'] =  'Rp.' . format_uang($jual->total_harga);
             $row['diskon'] = 'Rp.' . format_uang($jual->diskon * ($jual->total_harga)/100);
             $row['ppn'] = 'Rp.' . format_uang($jual->ppn * ($jual->total_harga)/100);
@@ -233,6 +238,7 @@ class LaporanPenjualanController extends Controller
 
         $data[] = [
             'DT_RowIndex' => '',
+            'no_faktur' => '',
             'tanggal' => 'Total',
             'member' => '',
             'dokter' => '',

@@ -26,6 +26,7 @@
                 <table class="table table-stiped table-bordered">
                     <thead>
                         <th width="5%">No</th>
+                        <th>No Faktur</th>
                         <th>Tanggal</th>
                         <th>Member</th>
                         <th>Dokter</th>
@@ -64,7 +65,7 @@
                 {data: 'no_faktur'},
                 {data: 'tanggal'},
                 {data: 'member'},
-                {data: 'tanggal'},
+                {data: 'dokter'},
                 {data: 'total_harga'},
                 {data: 'diskon'},
                 {data: 'ppn'},
