@@ -13,8 +13,9 @@ class PembelianController extends Controller
     public function index()
     {
         $supplier = Supplier::orderBy('nama')->get();
+        $pembelian = Pembelian::orderBy('id_pembelian', 'desc')->get();
 
-        return view('pembelian.index', compact('supplier'));
+        return view('pembelian.index', compact('supplier', 'pembelian'));
     }
 
     public function data()
@@ -49,12 +50,16 @@ class PembelianController extends Controller
             ->editColumn('ppn', function ($pembelian) {
                 return $pembelian->ppn . '%';
             })
+            ->editColumn('status2', function ($pembelian) {
+                return $pembelian->status2;
+            })
             ->addColumn('aksi', function ($pembelian) {
                 return '
                 <div class="btn-group">
                     <a href="'. route('pembelian.edit', $pembelian->id_pembelian) .'" class="btn btn-xs btn-info btn-flat"><i class="fa fa-pencil"></i></a>
                     <button onclick="showDetail(`'. route('pembelian.show', $pembelian->id_pembelian) .'`)" class="btn btn-xs btn-info btn-flat"><i class="fa fa-eye"></i></button>
                     <button onclick="deleteData(`'. route('pembelian.destroy', $pembelian->id_pembelian) .'`)" class="btn btn-xs btn-danger btn-flat"><i class="fa fa-trash"></i></button>
+                    <button onclick="addFormBayar(`'. route('pembayaran.store', $pembelian->id_pembelian) .'`,`'. $pembelian->id_pembelian .'` )" class="btn btn-xs btn-success btn-flat"><i class="fa fa-shopping-cart"></i></button>
                 </div>
                 ';
             })
@@ -126,7 +131,6 @@ class PembelianController extends Controller
         $datapembelian = $pembelian;
 
         // $supplier = Supplier::find('id_supplier', $pembelian->id_supplier)->get();
-
         // $detail = PembelianDetail::where('id_pembelian', $pembelian->id_pembelian)->get(); 
         // $produk = PembelianDetail::with('produk')->where('id_pembelian', $id)->get();
         $produk = Produk::orderBy('nama_produk')->get();

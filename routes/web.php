@@ -19,6 +19,7 @@ use App\Http\Controllers\{
     SettingController,
     SupplierController,
     UserController,
+    PembayaranController
 };
 use Illuminate\Support\Facades\Route;
 
@@ -46,6 +47,7 @@ Route::group(['middleware' => 'auth'], function () {
         Route::post('/kategori/import', [KategoriController::class, 'importKategori'])->name('kategori.import');
 
         Route::get('/produk/data', [ProdukController::class, 'data'])->name('produk.data');
+        Route::get('/produk/import', [ProdukController::class, 'import'])->name('produk.import');
         Route::post('/produk/delete-selected', [ProdukController::class, 'deleteSelected'])->name('produk.delete_selected');
         Route::post('/produk/cetak-barcode', [ProdukController::class, 'cetakBarcode'])->name('produk.cetak_barcode');
         Route::resource('/produk', ProdukController::class);
@@ -75,6 +77,15 @@ Route::group(['middleware' => 'auth'], function () {
         Route::resource('/pembelian_detail', PembelianDetailController::class)
             ->except('create', 'show', 'edit');
 
+        Route::get('/pembayaran/data', [PembayaranController::class, 'data'])->name('pembayaran.data');
+        Route::get('/pembayaran/loadform/{id}', [PembayaranController::class, 'loadForm'])->name('pembayaran.loadform');
+        Route::get('/pembayaran/{id}/bayar', [PembayaranController::class, 'bayar'])->name('pembayaran.bayar');
+        Route::get('/pembayaran/{id}/create', [PembayaranController::class, 'create'])->name('pembayaran.create');
+        Route::get('/pembayaran/{id}/store', [PembayaranController::class, 'store'])->name('pembayaran.store');
+        Route::get('/pembayaran/{id}/edit', [PembayaranController::class, 'edit'])->name('pembayaran.edit');
+        Route::resource('/pembayaran', PembayaranController::class)
+            ->except('create','edit','store');
+        
         Route::get('/penjualan/data', [PenjualanController::class, 'data'])->name('penjualan.data');
         Route::get('/penjualan', [PenjualanController::class, 'index'])->name('penjualan.index');
         Route::get('/penjualan/{id}', [PenjualanController::class, 'show'])->name('penjualan.show');

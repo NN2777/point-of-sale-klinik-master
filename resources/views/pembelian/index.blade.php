@@ -33,6 +33,7 @@
                         <th>Status</th>
                         <th>Jatuh Tempo</th>
                         <th>Total Bayar</th>
+                        <th>Status Bayar</th>
                         <th width="15%"><i class="fa fa-cog"></i></th>
                     </thead>
                 </table>
@@ -43,11 +44,12 @@
 
 @includeIf('pembelian.supplier')
 @includeIf('pembelian.detail')
+@includeIf('pembelian.form')
 @endsection
 
 @push('scripts')
 <script>
-    let table, table1;
+    let table, table1, table2;
 
     $(function () {
         table = $('.table-pembelian').DataTable({
@@ -70,11 +72,13 @@
                 {data: 'status'},
                 {data: 'jatuh_tempo'},
                 {data: 'bayar'},
+                {data: 'status2'},
                 {data: 'aksi', searchable: false, sortable: false},
             ]
         });
 
         $('.table-supplier').DataTable();
+
         table1 = $('.table-detail').DataTable({
             processing: true,
             bSort: false,
@@ -88,7 +92,43 @@
                 {data: 'subtotal'},
             ]
         })
+
+        $('#modal-form').validator().on('submit', function (e) {
+            if (! e.preventDefault()) {
+                $.post($('#modal-form form').attr('action'), $('#modal-form form').serialize())
+                    .done((response) => {
+                        $('#modal-form').modal('hide');
+                        table.ajax.reload();
+                    })
+                    .fail((errors) => {
+                        alert('Tidak dapat menyimpan data');
+                        return;
+                    });
+            }
+        });
     });
+
+    function addFormBayar(url, id) {
+        $('#modal-form').modal('show');
+        $('#modal-form .modal-title').text('Lakukan Pembayaran');
+
+        $('#modal-form form')[0].reset();
+        $('#modal-form form').attr('action', url);
+        $('#modal-form [name=_method]').val('get');
+        $('#modal-form [name=bayar]').focus();
+
+        $.get(`{{ url('/pembayaran/loadform') }}/${id}`)
+            .done((response) => {
+                $('#modal-form [name=no_faktur]').val(response.no_faktur);
+                $('#modal-form [name=id_pembelian]').val(response.id_pembelian);
+                $('#modal-form [name=tanggal_bayar]').val(response.tanggal);
+                $('#modal-form [name=bayar]').val(response.bayar);
+            })
+            .fail((errors) => {
+                alert('Tidak dapat menampilkan data');
+                return;
+            });
+    }
 
     function addForm() {
         $('#modal-supplier').modal('show');

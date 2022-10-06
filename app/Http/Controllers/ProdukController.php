@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Kategori;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Imports\ProdukImport;
 use Illuminate\Http\Request;
 use App\Models\Produk;
 use PDF;
@@ -171,5 +173,11 @@ class ProdukController extends Controller
         $pdf = PDF::loadView('produk.barcode', compact('dataproduk', 'no'));
         $pdf->setPaper('a4', 'potrait');
         return $pdf->stream('produk.pdf');
+    }
+
+    public function import(){
+        Excel::import(new ProdukImport, request()->file('file'));
+
+        return back();
     }
 }

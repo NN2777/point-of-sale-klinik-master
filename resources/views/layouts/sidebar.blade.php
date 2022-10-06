@@ -61,6 +61,11 @@
                 </a>
             </li>
             <li>
+                <a href="{{ route('pembayaran.index') }}">
+                    <i class="fa fa-download"></i> <span>Pembayaran</span>
+                </a>
+            </li>
+            <li>
                 <a href="{{ route('transaksi.index') }}">
                     <i class="fa fa-cart-arrow-down"></i> <span>Transaksi Aktif</span>
                 </a>
