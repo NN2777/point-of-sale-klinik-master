@@ -372,6 +372,58 @@ class LaporanPembelianController extends Controller
             ->make(true);
     }
 
+    public function getDataPembelianPerItem(){ 
+
+        $detail = PembelianDetail::with('produk','pembelian')->get();
+        $data = array();
+        $no = 0;
+        foreach ($detail as $dt) {
+            $row = array();
+            $row['DT_RowIndex'] = ++$no;
+            $row['no_faktur'] = $dt->no_faktur;
+            $row['produk'] = $dt->produk->nama_produk;
+            $row['supplier'] = $dt->pembelian->supplier;
+            $row['jumlah'] = $dt->jumlah;
+            $row['harga_beli'] = $dt->harga_beli;
+            $row['diskon'] = $dt->diskon;
+            $row['harga_total'] = $dt->subtotal;
+
+            $data[] = $row;
+
+            $data[] = [
+                'DT_RowIndex' => '',
+                'produk' => '',
+                'no_faktur' => '',
+                'supplier' => '',
+                'jumlah' => '',
+                'harga_beli' => '',
+                'diskon' => '',
+                'harga_total' => '',
+            ];
+        }
+
+        $data[] = [
+            'DT_RowIndex' => '',
+            'produk' => '',
+            'no_faktur' => '',
+            'supplier' => '',
+            'jumlah' => '',
+            'harga_beli' => '',
+            'diskon' => '',
+            'harga_total' => '',
+        ];
+        // dd($pembelian);
+        return $data;
+    }
+
+    public function dataItem()
+    {
+        $data = $this->getDataPembelianPerItem();
+        return datatables()
+            ->of($data)
+            ->make(true);
+    }
+
     public function exportNotaPDF($awal, $akhir)
     {
         $data = $this->getDataNota($awal, $akhir);
@@ -435,4 +487,5 @@ class LaporanPembelianController extends Controller
 
         return Excel::download($export, 'pembelian_nota.xlsx');
     }
+
 }

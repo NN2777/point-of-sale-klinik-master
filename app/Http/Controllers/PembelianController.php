@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Pembayaran;
 use Illuminate\Http\Request;
 use App\Models\Pembelian;
 use App\Models\PembelianDetail;
@@ -51,7 +52,12 @@ class PembelianController extends Controller
                 return $pembelian->ppn . '%';
             })
             ->editColumn('status2', function ($pembelian) {
-                return $pembelian->status2;
+                $status = $pembelian->status2;
+                if($status=='Lunas'){
+                    return '<span class="label label-success">'. $status .'</spa>';
+                }else {
+                    return '<span class="label label-danger">'. $status .'</spa>';
+                }
             })
             ->addColumn('aksi', function ($pembelian) {
                 return '
@@ -63,7 +69,7 @@ class PembelianController extends Controller
                 </div>
                 ';
             })
-            ->rawColumns(['aksi','no_faktur'])
+            ->rawColumns(['aksi','no_faktur','status2'])
             ->make(true);
     }
 
@@ -169,6 +175,7 @@ class PembelianController extends Controller
     {
         $pembelian = Pembelian::find($id);
         $detail    = PembelianDetail::where('id_pembelian', $pembelian->id_pembelian)->get();
+        $pembayaran = Pembayaran::where('id_pembelian', $pembelian->id_pembelian)->get();
         foreach ($detail as $item) {
             $produk = Produk::find($item->id_produk);
             if ($produk) {
@@ -176,6 +183,10 @@ class PembelianController extends Controller
                 $produk->update();
             }
             $item->delete();
+        }
+
+        foreach($pembayaran as $bayar){
+            $bayar->delete();
         }
 
         $pembelian->delete();

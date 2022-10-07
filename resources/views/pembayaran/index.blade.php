@@ -22,6 +22,7 @@
                         <th>Tanggal</th>
                         <th>No Faktur</th>
                         <th>Total Harga</th>
+                        <th>Bayar</th>
                         <th>Total Bayar</th>
                         <th>Status</th>
                         <th width="15%"><i class="fa fa-cog"></i></th>
@@ -53,6 +54,7 @@
                 {data: 'no_faktur'},
                 {data: 'bayar'},
                 {data: 'dibayar'},
+                {data: 'total_bayar'},
                 {data: 'status'},
                 {data: 'aksi', searchable: false, sortable: false},
             ]

@@ -83,8 +83,9 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('/pembayaran/{id}/create', [PembayaranController::class, 'create'])->name('pembayaran.create');
         Route::get('/pembayaran/{id}/store', [PembayaranController::class, 'store'])->name('pembayaran.store');
         Route::get('/pembayaran/{id}/edit', [PembayaranController::class, 'edit'])->name('pembayaran.edit');
+        Route::delete('/pembayaran/{id}', [PembayaranController::class, 'destroy'])->name('pembayaran.destroy');
         Route::resource('/pembayaran', PembayaranController::class)
-            ->except('create','edit','store');
+            ->except('create','edit','store','delete');
         
         Route::get('/penjualan/data', [PenjualanController::class, 'data'])->name('penjualan.data');
         Route::get('/penjualan', [PenjualanController::class, 'index'])->name('penjualan.index');
