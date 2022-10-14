@@ -4,9 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Exports\ExportPembelian;
 use App\Exports\ExportNota;
+use App\Exports\ExportPerItem;
 use Illuminate\Http\Request;
 use App\Models\Pembelian;
 use App\Models\PembelianDetail;
+use App\Models\Produk;
+use App\Models\Supplier;
 use PDF;
 use Maatwebsite\Excel\Facades\Excel;
 
@@ -372,53 +375,68 @@ class LaporanPembelianController extends Controller
             ->make(true);
     }
 
-    public function getDataPembelianPerItem(){ 
+    /* ================================================== INDEX ITEM ===================== */
+    public function indexItem(Request $request)
+    {
+        $tanggalAwal = date('Y-m-d', mktime(0, 0, 0, date('m'), 1, date('Y')));
+        $tanggalAkhir = date('Y-m-d');
+        $getitem = Produk::first();
+        $item = $getitem->nama_produk;
+        if ($request->has('tanggal_awal') && $request->tanggal_awal != "" && $request->has('tanggal_akhir') && $request->tanggal_akhir && $request->has('item') && $request->item) {
+            $tanggalAwal = $request->tanggal_awal;
+            $tanggalAkhir = $request->tanggal_akhir;
+            $item = $request->item;
+        }
 
-        $detail = PembelianDetail::with('produk','pembelian')->get();
+        return view('laporan.pembelian.item', compact('tanggalAwal', 'tanggalAkhir', 'item'));
+    }
+
+    public function getDataPembelianPerItem($awal, $akhir, $item){ 
+
+        $produk = Produk::where('nama_produk', $item)->first();
+        // $pembelian = PembelianDetail::with('pembelian', function($query) use ($awal, $akhir) {
+        //     $query->whereBetween('tanggal', [$awal, $akhir]);
+        // })->get();
+        // dd($pembelian);
+        $detail = PembelianDetail::with('pembelian.supplier')->whereBetween('tanggal',[$awal, $akhir])->where('id_produk', $produk->id_produk)->get();
         $data = array();
         $no = 0;
+        $jumlah = 0;
+        $total_pembelian_item = 0;
         foreach ($detail as $dt) {
+            $jumlah += $dt->jumlah;
+            $total_pembelian_item += $dt->subtotal;
             $row = array();
             $row['DT_RowIndex'] = ++$no;
             $row['no_faktur'] = $dt->no_faktur;
-            $row['produk'] = $dt->produk->nama_produk;
-            $row['supplier'] = $dt->pembelian->supplier;
+            $row['tanggal'] = $dt->tanggal;
+            $row['supplier'] = $dt->pembelian->supplier['nama'] ?? '';
             $row['jumlah'] = $dt->jumlah;
             $row['harga_beli'] = $dt->harga_beli;
-            $row['diskon'] = $dt->diskon;
+            $row['diskon'] = $dt->diskon ?? 0;
             $row['harga_total'] = $dt->subtotal;
 
             $data[] = $row;
 
-            $data[] = [
-                'DT_RowIndex' => '',
-                'produk' => '',
-                'no_faktur' => '',
-                'supplier' => '',
-                'jumlah' => '',
-                'harga_beli' => '',
-                'diskon' => '',
-                'harga_total' => '',
-            ];
         }
 
         $data[] = [
             'DT_RowIndex' => '',
-            'produk' => '',
             'no_faktur' => '',
-            'supplier' => '',
-            'jumlah' => '',
+            'tanggal' => '',
+            'supplier' => 'Jumlah',
+            'jumlah' => $jumlah,
             'harga_beli' => '',
-            'diskon' => '',
-            'harga_total' => '',
+            'diskon' => 'Harga Total',
+            'harga_total' => format_uang($total_pembelian_item),
         ];
         // dd($pembelian);
         return $data;
     }
 
-    public function dataItem()
+    public function dataItem($awal, $akhir, $item)
     {
-        $data = $this->getDataPembelianPerItem();
+        $data = $this->getDataPembelianPerItem($awal, $akhir, $item);
         return datatables()
             ->of($data)
             ->make(true);
@@ -460,6 +478,15 @@ class LaporanPembelianController extends Controller
         return $pdf->stream('Laporan-pembelian-' . date('Y-m-d-his') . '.pdf');
     }
 
+    public function exportItemPDF($awal, $akhir, $item)
+    {
+        $data = $this->getDataPembelianPerItem($awal, $akhir, $item);
+        $pdf  = PDF::loadView('laporan.pembelian.itempdf', compact('awal', 'akhir', 'data', 'item'));
+        $pdf->setPaper('a4', 'potrait');
+
+        return $pdf->stream('Laporan-pembelian-' . date('Y-m-d-his') . '.pdf');
+    }
+
     public function exportExcel($awal, $akhir){
         $data = $this->getData($awal, $akhir);
         $export = new ExportPembelian([$data]);
@@ -486,6 +513,13 @@ class LaporanPembelianController extends Controller
         $export = new ExportNota([$data]);
 
         return Excel::download($export, 'pembelian_nota.xlsx');
+    }
+
+    public function exportItemExcel($awal, $akhir, $item){
+        $data = $this->getDataPembelianPerItem($awal, $akhir, $item);
+        $export = new ExportPerItem([$data]);
+
+        return Excel::download($export, 'pembelian_total_' .$item. '.xlsx');
     }
 
 }

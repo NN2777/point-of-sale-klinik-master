@@ -24,11 +24,13 @@
                     <li class="list-group-item"><a href="{{ route('laporan-pembelian-kredit.index') }}">Laporan Pembelian Kredit</a></li>
                     <li class="list-group-item"><a href="{{ route('laporan-pembelian.index') }}">Laporan Pembelian Total</a></li>
                     <li class="list-group-item"><a href="{{ route('laporan-pembelian-nota.index') }}">Laporan Pembelian Nota</a></li>
+                    <li class="list-group-item"><a href="{{ route('laporan-pembelian-item.index') }}">Laporan Pembelian Per Item</a></li>
                     <li class="list-group-item active">Laporan Penjualan</a></li>
                     <li class="list-group-item"><a href="{{ route('laporan-penjualan-tunai.index') }}">Laporan Penjualan Tunai</a></li>
                     <li class="list-group-item"><a href="{{ route('laporan-penjualan-kredit.index') }}">Laporan Penjualan Kredit</a></li>
                     <li class="list-group-item"><a href="{{ route('laporan-penjualan.index') }}">Laporan Penjualan Total</a></li>
                     <li class="list-group-item"><a href="{{ route('laporan-penjualan-nota.index') }}">Laporan Penjualan Nota</a></li>
+                    <li class="list-group-item"><a href="{{ route('laporan-penjualan-item.index') }}">Laporan Penjualan Per Item</a></li>
                     <li class="list-group-item active">Laporan Persediaan</a></li>
                     <li class="list-group-item"><a href="{{ route('laporan-persediaan.index') }}">Laporan Persediaan</a></li>
                     <li class="list-group-item active">Laporan Laba Rugi</li>

@@ -1,7 +1,7 @@
 @extends('layouts.master')
 
 @section('title')
-    Laporan Pembelian {{ tanggal_indonesia($tanggalAwal, false) }} s/d {{ tanggal_indonesia($tanggalAkhir, false) }}
+    Laporan Penjualan {{ tanggal_indonesia($tanggalAwal, false) }} s/d {{ tanggal_indonesia($tanggalAkhir, false) }}
 @endsection
 
 @push('css')
@@ -19,9 +19,9 @@
         <div class="box">
             <div class="box-header with-border">
                 <button onclick="updatePeriode()" class="btn btn-info btn-xs btn-flat"><i class="fa fa-plus-circle"></i> Ubah Periode</button>
-                <a href="{{ route('pembelianitem.export_pdf', [$tanggalAwal, $tanggalAkhir, $item]) }}" target="_blank" class="btn btn-success btn-xs btn-flat"><i class="fa fa-file-excel-o"></i> Export PDF</a>
-                <a href="{{ route('pembelianitem.export_excel', [$tanggalAwal, $tanggalAkhir, $item]) }}" target="_blank" class="btn btn-success btn-xs btn-flat"><i class="fa fa-file-excel-o"></i> Export Excel</a>
-                <h3>Pembelian Obat : <b> {{ $item }} </b></h3>
+                <a href="{{ route('penjualanitem.export_pdf', [$tanggalAwal, $tanggalAkhir, $item]) }}" target="_blank" class="btn btn-success btn-xs btn-flat"><i class="fa fa-file-excel-o"></i> Export PDF</a>
+                <a href="{{ route('penjualanitem.export_excel', [$tanggalAwal, $tanggalAkhir, $item]) }}" target="_blank" class="btn btn-success btn-xs btn-flat"><i class="fa fa-file-excel-o"></i> Export Excel</a>
+                <h3>Penjualan Obat : <b> {{ $item }} </b> </h3>
             </div>
             <div class="box-body table-responsive">
                 <table class="table table-stiped table-bordered">
@@ -29,7 +29,7 @@
                         <th width="5%">No</th>
                         <th>No Faktur</th>
                         <th>Tanggal</th>
-                        <th>Supplier</th>
+                        <th>Pelanggan</th>
                         <th>Quantity</th>
                         <th>Harga Beli</th>
                         <th>Diskon</th>
@@ -41,7 +41,7 @@
     </div>
 </div>
 
-@includeIf('laporan.pembelian.itemform')
+@includeIf('laporan.penjualan.itemform')
 @endsection
 
 @push('scripts')
@@ -56,13 +56,13 @@
             serverSide: true,
             autoWidth: false,
             ajax: {
-                url: '{{ route("pembelianitem.data", [$tanggalAwal, $tanggalAkhir, $item]) }}',
+                url: '{{ route("penjualanitem.data", [$tanggalAwal, $tanggalAkhir, $item]) }}',
             },
             columns: [
                 {data: 'DT_RowIndex', searchable: false, sortable: false},
                 {data: 'no_faktur'},
                 {data: 'tanggal'},
-                {data: 'supplier'},
+                {data: 'pelanggan'},
                 {data: 'jumlah'},
                 {data: 'harga_beli'},
                 {data: 'diskon'},

@@ -12,4 +12,8 @@ class Dokter extends Model
     protected $table = 'dokter';
     protected $primaryKey = 'id_dokter';
     protected $guarded = [];
+
+    public function penjualan_detail(){
+        return $this->hasManyThrough(PenjualanDetail::class, Penjualan::class );
+    }
 }

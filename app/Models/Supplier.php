@@ -12,4 +12,13 @@ class Supplier extends Model
     protected $table = 'supplier';
     protected $primaryKey = 'id_supplier';
     protected $guarded = [];
+
+    public function pembelian()
+    {
+        return $this->hasMany(Pembelian::class, 'id_pembelian', 'id_pembelian');
+    }
+
+    public function pembelian_detail(){
+        return $this->hasManyThrough(PembelianDetail::class, Pembelian::class );
+    }
 }

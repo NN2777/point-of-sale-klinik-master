@@ -4,11 +4,13 @@ namespace App\Http\Controllers;
 
 use App\Exports\ExportNota;
 use App\Exports\ExportPenjualan;
+use App\Exports\ExportPerItemJual;
 use App\Models\Penjualan;
 use App\Models\PenjualanDetail;
 use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
 use PDF;
+use App\Models\Produk;
 
 class LaporanPenjualanController extends Controller
 {
@@ -261,6 +263,79 @@ class LaporanPenjualanController extends Controller
             ->of($data)
             ->make(true);
     }
+
+    public function indexItem(Request $request)
+    {
+        $tanggalAwal = date('Y-m-d', mktime(0, 0, 0, date('m'), 1, date('Y')));
+        $tanggalAkhir = date('Y-m-d');
+        $getitem = Produk::first();
+        $item = $getitem->nama_produk;
+        if ($request->has('tanggal_awal') && $request->tanggal_awal != "" && $request->has('tanggal_akhir') && $request->tanggal_akhir && $request->has('item') && $request->item) {
+            $tanggalAwal = $request->tanggal_awal;
+            $tanggalAkhir = $request->tanggal_akhir;
+            $item = $request->item;
+        }
+
+        return view('laporan.penjualan.item', compact('tanggalAwal', 'tanggalAkhir', 'item'));
+    }
+
+    public function getDataPenjualanPerItem($awal, $akhir, $item){ 
+
+        $produk = Produk::where('nama_produk', $item)->first();
+        $detail = PenjualanDetail::with('penjualan', 'penjualan.member', 'penjualan.dokter')->whereBetween('tanggal',[$awal, $akhir])->where('id_produk', $produk->id_produk)->get();
+        $data = array();
+        $no = 0;
+        $jumlah = 0;
+        $total_penjualan_item = 0;
+        foreach ($detail as $dt) {
+            $jumlah += $dt->jumlah;
+            $total_penjualan_item += $dt->subtotal;
+            $row = array();
+            $row['DT_RowIndex'] = ++$no;
+            $row['no_faktur'] = $dt->no_faktur;
+            $row['tanggal'] = $dt->tanggal;
+            $row['pelanggan'] = $dt->penjualan->member['nama'];
+            $row['jumlah'] = $dt->jumlah;
+            $row['harga_beli'] = $dt->harga_jual;
+            $row['diskon'] = $dt->diskon ?? 0;
+            $row['harga_total'] = $dt->subtotal;
+
+            $data[] = $row;
+
+        }
+
+        $data[] = [
+            'DT_RowIndex' => '',
+            'no_faktur' => '',
+            'tanggal' => '',
+            'pelanggan' => 'Jumlah',
+            'jumlah' => $jumlah,
+            'harga_beli' => '',
+            'diskon' => 'Harga Total',
+            'harga_total' => format_uang($total_penjualan_item),
+        ];
+        // dd($pembelian);
+        return $data;
+    }
+
+    public function dataItem($awal, $akhir, $item)
+    {
+        $data = $this->getDataPenjualanPerItem($awal, $akhir, $item);
+        return datatables()
+            ->of($data)
+            ->make(true);
+    }
+
+
+    public function exportItemPDF($awal, $akhir, $item)
+    {
+        $data = $this->getDataPenjualanPerItem($awal, $akhir, $item);
+        $pdf  = PDF::loadView('laporan.penjualan.itempdf', compact('awal', 'akhir', 'data', 'item'));
+        $pdf->setPaper('a4', 'potrait');
+
+        return $pdf->stream('Laporan-pembelian-' . date('Y-m-d-his') . '.pdf');
+    }
+
     
     public function exportKreditPDF($awal, $akhir)
     {
@@ -421,4 +496,10 @@ class LaporanPenjualanController extends Controller
         return Excel::download($export, 'penjualan_nota.xlsx');
     }
 
+    public function exportItemExcel($awal, $akhir, $item){
+        $data = $this->getDataPenjualanPerItem($awal, $akhir, $item);
+        $export = new ExportPerItemJual([$data]);
+
+        return Excel::download($export, 'penjualan_total_' .$item. '.xlsx');
+    }
 }

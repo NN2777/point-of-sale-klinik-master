@@ -22,7 +22,7 @@
                 <th width="5%">No</th>
                 <th>No Faktur</th>
                 <th>Tanggal</th>
-                <th>Supplier</th>
+                <th>Pelanggan</th>
                 <th>Jumlah</th>
                 <th>Harga Beli</th>
                 <th>Diskon</th>

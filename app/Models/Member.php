@@ -12,4 +12,8 @@ class Member extends Model
     protected $table = 'member';
     protected $primaryKey = 'id_member';
     protected $guarded = [];
+
+    public function penjualan_detail(){
+        return $this->hasManyThrough(PenjualanDetail::class, Penjualan::class );
+    }
 }
