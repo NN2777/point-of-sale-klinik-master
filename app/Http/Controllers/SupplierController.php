@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\ExportSupplier;
+use App\Imports\SupplierImport;
 use Illuminate\Http\Request;
 use App\Models\Supplier;
+use Maatwebsite\Excel\Facades\Excel;
 
 class SupplierController extends Controller
 {
@@ -103,5 +106,17 @@ class SupplierController extends Controller
         $supplier = Supplier::find($id)->delete();
 
         return response(null, 204);
+    }
+
+    public function supplier(){
+
+        return Excel::download(new ExportSupplier, 'daftar_supplier.xlsx');
+    }
+
+    public function import(Request $request) 
+    {
+        Excel::import(new SupplierImport, $request->file('file_supplier'));
+        
+        return back();
     }
 }

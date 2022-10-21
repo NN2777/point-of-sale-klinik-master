@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\ExportProduk;
 use App\Models\Kategori;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Imports\ProdukImport;
@@ -176,8 +177,38 @@ class ProdukController extends Controller
     }
 
     public function import(){
-        Excel::import(new ProdukImport, request()->file('file'));
+        Excel::import(new ProdukImport, request()->file('file_produk'));
 
         return back();
+    }
+
+    public function produk(){
+
+        $produk = Produk::leftJoin('kategori', 'kategori.id_kategori', 'produk.id_kategori')
+            ->select('produk.*', 'nama_kategori')
+            // ->orderBy('kode_produk', 'asc')
+            ->get();
+
+        $data = array();
+
+        foreach($produk as $barang){
+            $row = array();
+            $row['id_produk'] = $barang->id_produk;
+            $row['nama_kategori'] = $barang->nama_kategori;
+            $row['kode_produk'] = $barang->kode_produk;
+            $row['nama_produk'] = $barang->nama_produk;
+            $row['merk'] = $barang->merk;
+            $row['harga_beli'] =  $barang->harga_beli;
+            $row['harga_jual_1'] = $barang->harga_jual_1;
+            $row['harga_jual_2'] = $barang->harga_jual_2;
+            $row['harga_jual_3'] = $barang->harga_jual_3;
+            $row['harga_jual_4'] = $barang->harga_jual_4;;
+            $row['stok'] = $barang->stok;
+
+            $data[] = $row;
+        }
+
+        return Excel::download(new ExportProduk([$data]), 'daftar_produk.xlsx');
+        
     }
 }

@@ -2,15 +2,19 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\ExportHutang;
+use App\Exports\ExportHutangJual;
 use App\Exports\ExportNota;
 use App\Exports\ExportPenjualan;
 use App\Exports\ExportPerItemJual;
+use App\Models\Member;
 use App\Models\Penjualan;
 use App\Models\PenjualanDetail;
 use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
 use PDF;
 use App\Models\Produk;
+use App\Models\Supplier;
 
 class LaporanPenjualanController extends Controller
 {
@@ -326,6 +330,87 @@ class LaporanPenjualanController extends Controller
             ->make(true);
     }
 
+     /* ====================================================INDEX HUTANG=====================================*/
+     public function indexHutang(Request $request)
+     {
+         $tanggalAwal = date('Y-m-d', mktime(0, 0, 0, date('m'), 1, date('Y')));
+         $tanggalAkhir = date('Y-m-d');
+ 
+         if ($request->has('tanggal_awal') && $request->tanggal_awal != "" && $request->has('tanggal_akhir') && $request->tanggal_akhir) {
+             $tanggalAwal = $request->tanggal_awal;
+             $tanggalAkhir = $request->tanggal_akhir;
+         }
+ 
+         return view('laporan.hutang.hutangjual', compact('tanggalAwal', 'tanggalAkhir'));
+     }
+
+    public function getDataHutang($awal, $akhir)
+    {   
+        $member = Member::orderBy('id_member', 'desc')->get();
+
+        $data = array();
+        $total_grand_hutang = 0;
+
+        foreach ($member as $beli) {
+            $data[] = [
+                'DT_RowIndex' => '',
+                'no_nota' => 'NAMA   : ' . $beli->nama,
+                'tanggal_transaksi' =>  'ALAMAT : ' . $beli->alamat,
+                'tanggal_jatuh_tempo' => '',
+                'saldo_hutang' => '',
+            ];
+
+            $penjualan = Penjualan::orderBy('tanggal', 'asc')->where('id_member', $beli->id_member)->whereBetween('tanggal', [$awal, $akhir])->get();
+            $total_penjualan_member = 0;
+            $no = 0;
+            foreach($penjualan as $barang){
+                $total_penjualan_member += $barang->bayar;
+                $data[] = [
+                    'DT_RowIndex' => ++$no,
+                    'no_nota' => $barang->no_faktur,
+                    'tanggal_transaksi' => $barang->tanggal,
+                    'tanggal_jatuh_tempo' => $barang->jatuh_tempo,
+                    'saldo_hutang' => 'Rp. '.format_uang($barang->bayar),
+                ];
+            }
+            $total_grand_hutang += $total_penjualan_member;
+
+            $data[] = [
+                'DT_RowIndex' => '',
+                'no_nota' => '',
+                'tanggal_transaksi' => '',  
+                'tanggal_jatuh_tempo' => 'Total Hutang',
+                'saldo_hutang' => 'Rp. '.format_uang($total_penjualan_member),
+            ];
+
+            $data[] = [
+                'DT_RowIndex' => '',
+                'no_nota' =>'' ,
+                'tanggal_transaksi' =>  '',
+                'tanggal_jatuh_tempo' => '',
+                'saldo_hutang' => '',
+            ];
+            // dd($produk);
+        }
+
+        $data[] = [
+            'DT_RowIndex' => '',
+            'no_nota' => '',
+            'tanggal_transaksi' => '',  
+            'tanggal_jatuh_tempo' => 'Grand Total',
+            'saldo_hutang' => 'Rp. '.format_uang($total_grand_hutang),
+        ];
+
+        return $data;
+    }
+
+    public function dataHutang($awal, $akhir)
+    {
+        $data = $this->getDataHutang($awal, $akhir);
+        return datatables()
+            ->of($data)
+            ->make(true);
+    }
 
     public function exportItemPDF($awal, $akhir, $item)
     {
@@ -335,7 +420,6 @@ class LaporanPenjualanController extends Controller
 
         return $pdf->stream('Laporan-pembelian-' . date('Y-m-d-his') . '.pdf');
     }
-
     
     public function exportKreditPDF($awal, $akhir)
     {
@@ -467,6 +551,15 @@ class LaporanPenjualanController extends Controller
         return $pdf->stream('Laporan-penjualan-' . date('Y-m-d-his') . '.pdf');
     }
 
+    public function exportHutangPDF($awal, $akhir)
+    {
+        $data = $this->getDataHutang($awal, $akhir);
+        $pdf  = PDF::loadView('laporan.hutang.hutangjualpdf', compact('awal', 'akhir', 'data'));
+        $pdf->setPaper('a4', 'potrait');
+
+        return $pdf->stream('Laporan-hutang-penjualan' . date('Y-m-d-his') . '.pdf');
+    }
+
 
     public function exportExcel($awal, $akhir){
         $data = $this->getData($awal, $akhir);
@@ -502,4 +595,12 @@ class LaporanPenjualanController extends Controller
 
         return Excel::download($export, 'penjualan_total_' .$item. '.xlsx');
     }
+
+    public function exportHutangExcel($awal, $akhir){
+        $data = $this->getDataHutang($awal, $akhir);
+        $export = new ExportHutangJual([$data]);
+
+        return Excel::download($export, 'penjualan_hutang.xlsx');
+    }
+
 }

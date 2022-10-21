@@ -2,11 +2,11 @@
 
 namespace App\Imports;
 
+use App\Models\Kategori;
 use App\Models\Produk;
 use Maatwebsite\Excel\Concerns\ToModel;
-use Maatwebsite\Excel\Concerns\WithHeadingRow;
 
-class ProdukImport implements ToModel, WithHeadingRow
+class ProdukImport implements ToModel
 {
     /**
     * @param array $row
@@ -16,17 +16,18 @@ class ProdukImport implements ToModel, WithHeadingRow
     public function model(array $row)
     {
         return new Produk([
-            "kode_produk" => $row['kode_produk'],
-            "nama_produk" => $row['nama_produk'],
-            "id_kategori" => $row['id_kategori'],
-            "merk" => $row['merk'],
-            "harga_beli" => $row['harga_beli'],
-            "diskon" => $row['diskon'],
-            "harga_jual_1" => $row['harga_jual_1'],
-            "harga_jual_2" => $row['harga_jual_2'],
-            "harga_jual_3" => $row['harga_jual_3'],
-            "harga_jual_4" => $row['harga_jual_4'],
-            "stok" => $row['stok']
+            'id_kategori' => Kategori::where('nama_kategori', $row['0'])->firstOrFail()->id_kategori,
+            'kode_produk'=> $row[1],
+            'nama_produk'       => $row[2],
+            'merk'     => $row[3],
+            'harga_beli'    => $row[4],
+            'harga_jual_1'    => $row[5],
+            'harga_jual_2'    => $row[6],
+            'harga_jual_3'    => $row[7],
+            'harga_jual_4'    => $row[8],
+            'stok'    => $row[9],
+            'diskon'    => $row[10] ?? 0,
+
         ]);
     }
 }

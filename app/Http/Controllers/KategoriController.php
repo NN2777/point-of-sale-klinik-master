@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\ExportKategori;
 use Illuminate\Http\Request;
 use App\Models\Kategori;
 use App\Imports\KategoriImport;
+use Maatwebsite\Excel\Facades\Excel;
+
 
 class KategoriController extends Controller
 {
@@ -17,6 +20,7 @@ class KategoriController extends Controller
     {
         return view('kategori.index');
     }
+
 
     public function data()
     {
@@ -116,8 +120,16 @@ class KategoriController extends Controller
         return response(null, 204);
     }
 
-    // <!-- public function importKategori(Request $request)
-    // {
+    public function import(Request $request) 
+    {
+        Excel::import(new KategoriImport, $request->file('file_kategori'));
+        
+        return response()->json('Data berhasil disimpan', 200);
+    }
 
-    // } -->
+    public function exportExcel(){
+        
+        return view('kategori.index');
+    }
+
 }

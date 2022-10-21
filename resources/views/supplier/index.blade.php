@@ -15,6 +15,8 @@
         <div class="box">
             <div class="box-header with-border">
                 <button onclick="addForm('{{ route('supplier.store') }}')" class="btn btn-success btn-xs btn-flat"><i class="fa fa-plus-circle"></i> Tambah</button>
+                <button onclick="addExcel('{{ route('supplier.import') }}')" class="btn btn-success btn-xs btn-flat"><i class="fa fa-plus-circle"></i> Import Supplier</button>
+                <a href="{{ route('supplier.supplier') }}" class="btn btn-info btn-xs btn-flat"><i class="fa fa-id-card"></i> Export Supplier</a>
             </div>
             <div class="box-body table-responsive">
                 <table class="table table-stiped table-bordered">
@@ -32,6 +34,7 @@
 </div>
 
 @includeIf('supplier.form')
+@includeIf('supplier.formexcel')
 @endsection
 
 @push('scripts')
@@ -79,6 +82,15 @@
         $('#modal-form form').attr('action', url);
         $('#modal-form [name=_method]').val('post');
         $('#modal-form [name=nama]').focus();
+    }
+
+    function addExcel(url) {
+        $('#modal-form-excel').modal('show');
+        $('#modal-form-excel .modal-title').text('Tambah Member');
+
+        $('#modal-form-excel form')[0].reset();
+        $('#modal-form-excel form').attr('action', url);
+        $('#modal-form-excel [name=_method]').val('post');
     }
 
     function editForm(url) {

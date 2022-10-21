@@ -18,6 +18,7 @@ class BuatPembelianDetailTable extends Migration
             $table->string('no_faktur')->nullable();
             $table->integer('id_pembelian');
             $table->integer('id_produk');
+            $table->date('tanggal');
             $table->integer('harga_beli');
             $table->integer('jumlah');
             $table->integer('diskon');

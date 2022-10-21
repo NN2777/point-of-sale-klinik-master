@@ -15,6 +15,8 @@
         <div class="box">
             <div class="box-header with-border">
                 <button onclick="addForm('{{ route('kategori.store') }}')" class="btn btn-success btn-xs btn-flat"><i class="fa fa-plus-circle"></i> Tambah</button>
+                <button onclick="addExcel('{{ route('kategori.import') }}')" class="btn btn-success btn-xs btn-flat"><i class="fa fa-plus-circle"></i> Import Excel</button>
+                <a href="{{ route('dokter.naufal') }}" class="btn btn-info btn-xs btn-flat"><i class="fa fa-pencil"></i>Export Excel</a>
             </div>
             <div class="box-body table-responsive">
                 <table class="table table-stiped table-bordered">
@@ -30,6 +32,7 @@
 </div>
 
 @includeIf('kategori.form')
+@includeIf('kategori.formexcel')
 @endsection
 
 @push('scripts')
@@ -76,6 +79,16 @@
         $('#modal-form [name=_method]').val('post');
         $('#modal-form [name=nama_kategori]').focus();
     }
+
+    function addExcel(url) {
+        $('#modal-form-excel').modal('show');
+        $('#modal-form-excel .modal-title').text('Tambah Kategori');
+
+        $('#modal-form-excel form')[0].reset();
+        $('#modal-form-excel form').attr('action', url);
+        $('#modal-form-excel [name=_method]').val('post');
+    }
+
 
     function editForm(url) {
         $('#modal-form').modal('show');

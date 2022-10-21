@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\ExportHutang;
 use App\Exports\ExportPembelian;
 use App\Exports\ExportNota;
 use App\Exports\ExportPerItem;
@@ -442,13 +443,95 @@ class LaporanPembelianController extends Controller
             ->make(true);
     }
 
+    /* ====================================================INDEX HUTANG=====================================*/
+    public function indexHutang(Request $request)
+    {
+        $tanggalAwal = date('Y-m-d', mktime(0, 0, 0, date('m'), 1, date('Y')));
+        $tanggalAkhir = date('Y-m-d');
+
+        if ($request->has('tanggal_awal') && $request->tanggal_awal != "" && $request->has('tanggal_akhir') && $request->tanggal_akhir) {
+            $tanggalAwal = $request->tanggal_awal;
+            $tanggalAkhir = $request->tanggal_akhir;
+        }
+
+        return view('laporan.hutang.index', compact('tanggalAwal', 'tanggalAkhir'));
+    }
+
+    public function getDataHutang($awal, $akhir)
+    {   
+        $supplier = Supplier::orderBy('id_supplier', 'desc')->get();
+
+        $data = array();
+        $total_grand_hutang = 0;
+
+        foreach ($supplier as $beli) {
+            $data[] = [
+                'DT_RowIndex' => '',
+                'no_nota' => 'NAMA   : ' . $beli->nama,
+                'tanggal_pembelian' =>  'ALAMAT : ' . $beli->alamat,
+                'tanggal_jatuh_tempo' => '',
+                'saldo_hutang' => '',
+            ];
+
+            $pembelian = Pembelian::orderBy('tanggal', 'asc')->where('id_supplier', $beli->id_supplier)->whereBetween('tanggal', [$awal, $akhir])->get();
+            $total_pembelian_supplier = 0;
+            $no = 0;
+            foreach($pembelian as $barang){
+                $total_pembelian_supplier += $barang->bayar;
+                $data[] = [
+                    'DT_RowIndex' => ++$no,
+                    'no_nota' => $barang->no_faktur,
+                    'tanggal_pembelian' => $barang->tanggal,
+                    'tanggal_jatuh_tempo' => $barang->jatuh_tempo,
+                    'saldo_hutang' => 'Rp. '.format_uang($barang->bayar),
+                ];
+            }
+            $total_grand_hutang += $total_pembelian_supplier;
+
+            $data[] = [
+                'DT_RowIndex' => '',
+                'no_nota' => '',
+                'tanggal_pembelian' => '',  
+                'tanggal_jatuh_tempo' => 'Total Hutang',
+                'saldo_hutang' => 'Rp. '.format_uang($total_pembelian_supplier),
+            ];
+
+            $data[] = [
+                'DT_RowIndex' => '',
+                'no_nota' =>'' ,
+                'tanggal_pembelian' =>  '',
+                'tanggal_jatuh_tempo' => '',
+                'saldo_hutang' => '',
+            ];
+            // dd($produk);
+        }
+
+        $data[] = [
+            'DT_RowIndex' => '',
+            'no_nota' => '',
+            'tanggal_pembelian' => '',  
+            'tanggal_jatuh_tempo' => 'Grand Total',
+            'saldo_hutang' => 'Rp. '.format_uang($total_grand_hutang),
+        ];
+
+        return $data;
+    }
+
+    public function dataHutang($awal, $akhir)
+    {
+        $data = $this->getDataHutang($awal, $akhir);
+        return datatables()
+            ->of($data)
+            ->make(true);
+    }
+
     public function exportNotaPDF($awal, $akhir)
     {
         $data = $this->getDataNota($awal, $akhir);
         $pdf  = PDF::loadView('laporan.pembelian.notapdf', compact('awal', 'akhir', 'data'));
         $pdf->setPaper('a4', 'potrait');
 
-        return $pdf->stream('Laporan-pembelian-' . date('Y-m-d-his') . '.pdf');
+        return $pdf->stream('Laporan-pembelian-nota' . date('Y-m-d-his') . '.pdf');
     }
 
     public function exportPDF($awal, $akhir)
@@ -457,7 +540,7 @@ class LaporanPembelianController extends Controller
         $pdf  = PDF::loadView('laporan.pembelian.pdf', compact('awal', 'akhir', 'data'));
         $pdf->setPaper('a4', 'potrait');
 
-        return $pdf->stream('Laporan-pembelian-' . date('Y-m-d-his') . '.pdf');
+        return $pdf->stream('Laporan-pembelian-total' . date('Y-m-d-his') . '.pdf');
     }
 
     public function exportTunaiPDF($awal, $akhir)
@@ -466,7 +549,7 @@ class LaporanPembelianController extends Controller
         $pdf  = PDF::loadView('laporan.pembelian.tunaipdf', compact('awal', 'akhir', 'data'));
         $pdf->setPaper('a4', 'potrait');
 
-        return $pdf->stream('Laporan-pembelian-' . date('Y-m-d-his') . '.pdf');
+        return $pdf->stream('Laporan-pembelian-tunai' . date('Y-m-d-his') . '.pdf');
     }
 
     public function exportKreditPDF($awal, $akhir)
@@ -475,7 +558,7 @@ class LaporanPembelianController extends Controller
         $pdf  = PDF::loadView('laporan.pembelian.kreditpdf', compact('awal', 'akhir', 'data'));
         $pdf->setPaper('a4', 'potrait');
 
-        return $pdf->stream('Laporan-pembelian-' . date('Y-m-d-his') . '.pdf');
+        return $pdf->stream('Laporan-pembelian-kredit' . date('Y-m-d-his') . '.pdf');
     }
 
     public function exportItemPDF($awal, $akhir, $item)
@@ -484,7 +567,16 @@ class LaporanPembelianController extends Controller
         $pdf  = PDF::loadView('laporan.pembelian.itempdf', compact('awal', 'akhir', 'data', 'item'));
         $pdf->setPaper('a4', 'potrait');
 
-        return $pdf->stream('Laporan-pembelian-' . date('Y-m-d-his') . '.pdf');
+        return $pdf->stream('Laporan-pembelian-' . $item . '.pdf');
+    }
+
+    public function exportHutangPDF($awal, $akhir)
+    {
+        $data = $this->getDataHutang($awal, $akhir);
+        $pdf  = PDF::loadView('laporan.hutang.pdf', compact('awal', 'akhir', 'data'));
+        $pdf->setPaper('a4', 'potrait');
+
+        return $pdf->stream('Laporan-hutang-' . date('Y-m-d-his') . '.pdf');
     }
 
     public function exportExcel($awal, $akhir){
@@ -521,5 +613,13 @@ class LaporanPembelianController extends Controller
 
         return Excel::download($export, 'pembelian_total_' .$item. '.xlsx');
     }
+
+    public function exportHutangExcel($awal, $akhir){
+        $data = $this->getDataHutang($awal, $akhir);
+        $export = new ExportHutang([$data]);
+
+        return Excel::download($export, 'pembelian_hutang.xlsx');
+    }
+
 
 }

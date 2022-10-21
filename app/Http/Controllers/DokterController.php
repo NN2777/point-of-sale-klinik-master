@@ -2,9 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\ExportDokter;
+use App\Exports\ExportKategori;
+use App\Imports\DokterImport;
 use App\Models\Dokter;
 use App\Models\Setting;
 use Illuminate\Http\Request;
+use Maatwebsite\Excel\Facades\Excel;
 use PDF;
 
 class DokterController extends Controller
@@ -17,6 +21,14 @@ class DokterController extends Controller
     public function index()
     {
         return view('dokter.index');
+    }
+
+    public function naufal(){
+        return Excel::download(new ExportKategori, 'data_kategori.xlsx');
+    }
+
+    public function dokter(){
+        return Excel::download(new ExportDokter, 'data_dokter.xlsx');
     }
 
     public function data()
@@ -144,5 +156,12 @@ class DokterController extends Controller
         $pdf = PDF::loadView('dokter.cetak', compact('datadokter', 'no', 'setting'));
         $pdf->setPaper(array(0, 0, 566.93, 850.39), 'potrait');
         return $pdf->stream('dokter.pdf');
+    }
+
+    public function import(Request $request) 
+    {
+        Excel::import(new DokterImport, $request->file('file_dokter'));
+        
+        return back();
     }
 }

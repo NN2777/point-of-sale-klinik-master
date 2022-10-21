@@ -15,7 +15,8 @@
         <div class="box">
             <div class="box-header with-border">
                 <button onclick="addForm('{{ route('member.store') }}')" class="btn btn-success btn-xs btn-flat"><i class="fa fa-plus-circle"></i> Tambah</button>
-                <button onclick="cetakMember('{{ route('member.cetak_member') }}')" class="btn btn-info btn-xs btn-flat"><i class="fa fa-id-card"></i> Cetak Member</button>
+                <button onclick="addExcel('{{ route('member.import') }}')" class="btn btn-success btn-xs btn-flat"><i class="fa fa-plus-circle"></i> Import Member</button>
+                <a href="{{ route('member.member') }}" class="btn btn-info btn-xs btn-flat"><i class="fa fa-id-card"></i> Export Member</a>
             </div>
             <div class="box-body table-responsive">
                 <form action="" method="post" class="form-member">
@@ -40,6 +41,7 @@
 </div>
 
 @includeIf('member.form')
+@includeIf('member.formexcel')
 @endsection
 
 @push('scripts')
@@ -84,6 +86,15 @@
             $(':checkbox').prop('checked', this.checked);
         });
     });
+
+    function addExcel(url) {
+        $('#modal-form-excel').modal('show');
+        $('#modal-form-excel .modal-title').text('Tambah Member');
+
+        $('#modal-form-excel form')[0].reset();
+        $('#modal-form-excel form').attr('action', url);
+        $('#modal-form-excel [name=_method]').val('post');
+    }
 
     function addForm(url) {
         $('#modal-form').modal('show');

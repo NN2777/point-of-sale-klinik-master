@@ -44,24 +44,34 @@ Route::group(['middleware' => 'auth'], function () {
     Route::group(['middleware' => 'level:1'], function () {
         Route::get('/kategori/data', [KategoriController::class, 'data'])->name('kategori.data');
         Route::resource('/kategori', KategoriController::class);
-        Route::post('/kategori/import', [KategoriController::class, 'importKategori'])->name('kategori.import');
+        Route::post('/kategori/import', [KategoriController::class, 'import'])->name('kategori.import');
+        Route::get('/kategori/export', [KategoriController::class, 'export'])->name('kategori.export_excel');
 
         Route::get('/produk/data', [ProdukController::class, 'data'])->name('produk.data');
         Route::get('/produk/import', [ProdukController::class, 'import'])->name('produk.import');
+        Route::get('/produk/produk', [ProdukController::class, 'produk'])->name('produk.produk');
         Route::post('/produk/delete-selected', [ProdukController::class, 'deleteSelected'])->name('produk.delete_selected');
         Route::post('/produk/cetak-barcode', [ProdukController::class, 'cetakBarcode'])->name('produk.cetak_barcode');
         Route::resource('/produk', ProdukController::class);
+        Route::post('/produk/import', [ProdukController::class, 'import'])->name('produk.import');
 
         Route::get('/member/data', [MemberController::class, 'data'])->name('member.data');
+        Route::get('/member/member', [MemberController::class, 'member'])->name('member.member');
         Route::post('/member/cetak-member', [MemberController::class, 'cetakMember'])->name('member.cetak_member');
         Route::resource('/member', MemberController::class);
+        Route::post('/member/import', [MemberController::class, 'import'])->name('member.import');
 
         Route::get('/dokter/data', [DokterController::class, 'data'])->name('dokter.data');
+        Route::get('/dokter/naufal', [DokterController::class, 'naufal'])->name('dokter.naufal');
+        Route::get('/dokter/dokter', [DokterController::class, 'dokter'])->name('dokter.dokter');
+        Route::post('/dokter/import', [DokterController::class, 'import'])->name('dokter.import');
         Route::post('/dokter/cetak-dokter', [DokterController::class, 'cetakDokter'])->name('dokter.cetak_dokter');
         Route::resource('/dokter', DokterController::class);
 
         Route::get('/supplier/data', [SupplierController::class, 'data'])->name('supplier.data');
+        Route::get('/supplier/supplier', [SupplierController::class, 'supplier'])->name('supplier.supplier');
         Route::resource('/supplier', SupplierController::class);
+        Route::post('/supplier/import', [SupplierController::class, 'import'])->name('supplier.import');
 
         Route::get('/pengeluaran/data', [PengeluaranController::class, 'data'])->name('pengeluaran.data');
         Route::resource('/pengeluaran', PengeluaranController::class);
@@ -114,6 +124,11 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('/laporan-labarugi/data/{awal}/{akhir}', [LaporanLabaRugiController::class, 'data'])->name('labarugi.data');
         Route::get('/laporan-labarugi/pdf/{awal}/{akhir}', [LaporanLabaRugiController::class, 'exportPDF'])->name('labarugi.export_pdf');
         Route::get('/laporan-labarugi/excel/{awal}/{akhir}', [LaporanLabaRugiController::class, 'exportExcel'])->name('labarugi.export_excel');
+
+        Route::get('/laporan-labarugi-nota', [LaporanLabaRugiController::class, 'indexlabarugi'])->name('labarugi-nota.index');
+        Route::get('/laporan-labarugi-nota/data/{awal}/{akhir}', [LaporanLabaRugiController::class, 'dataLabaRugi'])->name('labaruginota.data');
+        Route::get('/laporan-labarugi-nota/pdf/{awal}/{akhir}', [LaporanLabaRugiController::class, 'exportNotaPDF'])->name('labaruginota.export_pdf');
+        Route::get('/laporan-labarugi-nota/excel/{awal}/{akhir}', [LaporanLabaRugiController::class, 'exportNotaExcel'])->name('labaruginota.export_excel');
 
         /* laporan pembelian total, kredit, tunai */
         Route::get('/laporan-pembelian', [LaporanPembelianController::class, 'index'])->name('laporan-pembelian.index');
@@ -173,6 +188,18 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('/laporan-persediaan/data/{tanggal}', [LaporanPersediaanController::class, 'data'])->name('persediaan.data');
         Route::get('/laporan-persediaan/pdf/{tanggal}', [LaporanPersediaanController::class, 'exportPDF'])->name('persediaan.export_pdf');
         Route::get('/laporan-persediaan/excel/{tanggal}', [LaporanPersediaanController::class, 'exportExcel'])->name('persediaan.export_excel');
+
+        /* laporan hutang pembelian */
+        Route::get('/laporan-pembelian-hutang', [LaporanPembelianController::class, 'indexHutang'])->name('laporan-pembelian-hutang.index');
+        Route::get('/laporan-pembelian-hutang/data/{awal}/{akhir}', [LaporanPembelianController::class, 'dataHutang'])->name('pembelianhutang.data');
+        Route::get('/laporan-pembelian-hutang/pdf/{awal}/{akhir}', [LaporanPembelianController::class, 'exportHutangPDF'])->name('pembelianhutang.export_pdf');
+        Route::get('/laporan-pembelian-hutang/excel/{awal}/{akhir}', [LaporanPembelianController::class, 'exportHutangExcel'])->name('pembelianhutang.export_excel');
+
+        /* laporan hutang penjualan */
+        Route::get('/laporan-penjualan-hutang', [LaporanPenjualanController::class, 'indexHutang'])->name('laporan-penjualan-hutang.index');
+        Route::get('/laporan-penjualan-hutang/data/{awal}/{akhir}', [LaporanPenjualanController::class, 'dataHutang'])->name('penjualanhutang.data');
+        Route::get('/laporan-penjualan-hutang/pdf/{awal}/{akhir}', [LaporanPenjualanController::class, 'exportHutangPDF'])->name('penjualanhutang.export_pdf');
+        Route::get('/laporan-penjualan-hutang/excel/{awal}/{akhir}', [LaporanPenjualanController::class, 'exportHutangExcel'])->name('penjualanhutang.export_excel');
 
         Route::get('/user/data', [UserController::class, 'data'])->name('user.data');
         Route::resource('/user', UserController::class);

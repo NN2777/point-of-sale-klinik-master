@@ -16,13 +16,9 @@
             <div class="box-header with-border">
                 <div class="btn-group">
                     <button onclick="addForm('{{ route('produk.store') }}')" class="btn btn-success btn-xs btn-flat"><i class="fa fa-plus-circle"></i> Tambah</button>
+                    <button onclick="addExcel('{{ route('produk.import') }}')" class="btn btn-success btn-xs btn-flat"><i class="fa fa-plus-circle"></i> Import Excel</button>
                     <button onclick="deleteSelected('{{ route('produk.delete_selected') }}')" class="btn btn-danger btn-xs btn-flat"><i class="fa fa-trash"></i> Hapus</button>
-                    <button onclick="cetakBarcode('{{ route('produk.cetak_barcode') }}')" class="btn btn-info btn-xs btn-flat"><i class="fa fa-barcode"></i> Cetak Barcode</button>
-                    <form action="{{ route('produk.import')}}" method="POST" enctype="multipart/form-data">
-                        @csrf
-                        <input type="file" name="file" class="form-control">
-                        <button class="btn btn-info" class="form-control"> Upload Produk</button>
-                    </form>
+                    <a href="{{ route('produk.produk') }}" class="btn btn-info btn-xs btn-flat"><i class="fa fa-barcode"></i>Export Produk</a>
                 </div>
             </div>
             <div class="box-body table-responsive">
@@ -55,6 +51,7 @@
 </div>
 
 @includeIf('produk.form')
+@includeIf('produk.formexcel')
 @endsection
 
 @push('scripts')
@@ -115,6 +112,15 @@
         $('#modal-form form').attr('action', url);
         $('#modal-form [name=_method]').val('post');
         $('#modal-form [name=nama_produk]').focus();
+    }
+
+    function addExcel(url) {
+        $('#modal-form-excel').modal('show');
+        $('#modal-form-excel .modal-title').text('Import Produk');
+
+        $('#modal-form-excel form')[0].reset();
+        $('#modal-form-excel form').attr('action', url);
+        $('#modal-form-excel [name=_method]').val('post');
     }
 
     function editForm(url) {

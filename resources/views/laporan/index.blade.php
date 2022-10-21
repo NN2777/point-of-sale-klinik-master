@@ -33,8 +33,13 @@
                     <li class="list-group-item"><a href="{{ route('laporan-penjualan-item.index') }}">Laporan Penjualan Per Item</a></li>
                     <li class="list-group-item active">Laporan Persediaan</a></li>
                     <li class="list-group-item"><a href="{{ route('laporan-persediaan.index') }}">Laporan Persediaan</a></li>
+                    <li class="list-group-item active">Laporan Hutang</li>
+                    <li class="list-group-item"><a href="{{ route('laporan-pembelian-hutang.index') }}">Laporan Hutang Pembelian</a></li>
+                    <li class="list-group-item"><a href="{{ route('laporan-penjualan-hutang.index') }}">Laporan Hutang Penjualan</a></li>
                     <li class="list-group-item active">Laporan Laba Rugi</li>
-                    <li class="list-group-item"><a href="{{ route('labarugi.index') }}">Laporan Laba Rugi</a></li>
+                    <li class="list-group-item"><a href="{{ route('labarugi.index') }}">Laporan Laba Rugi Per Waktu</a></li>
+                    <li class="list-group-item"><a href="{{ route('labarugi-nota.index') }}">Laporan Laba Rugi Per Nota</a></li>
+                    
                 </ul>
             </div>
             <!-- <div class="box-body">

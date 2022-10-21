@@ -15,7 +15,8 @@
         <div class="box">
             <div class="box-header with-border">
                 <button onclick="addForm('{{ route('dokter.store') }}')" class="btn btn-success btn-xs btn-flat"><i class="fa fa-plus-circle"></i> Tambah</button>
-                <button onclick="cetakDokter('{{ route('dokter.cetak_dokter') }}')" class="btn btn-info btn-xs btn-flat"><i class="fa fa-id-card"></i> Cetak Dokter</button>
+                <button onclick="addExcel('{{ route('dokter.import') }}')" class="btn btn-success btn-xs btn-flat"><i class="fa fa-plus-circle"></i> Import Excel</button>
+                <a href="{{ route('dokter.naufal') }}" class="btn btn-info btn-xs btn-flat"><i class="fa fa-id-card"></i> Export Dokter</a>
             </div>
             <div class="box-body table-responsive">
                 <form action="" method="post" class="form-dokter">
@@ -40,6 +41,7 @@
 </div>
 
 @includeIf('dokter.form')
+@includeIf('dokter.formexcel')
 @endsection
 
 @push('scripts')
@@ -130,6 +132,15 @@
                     return;
                 });
         }
+    }
+
+    function addExcel(url) {
+        $('#modal-form-excel').modal('show');
+        $('#modal-form-excel .modal-title').text('Tambah Dokter');
+
+        $('#modal-form-excel form')[0].reset();
+        $('#modal-form-excel form').attr('action', url);
+        $('#modal-form-excel [name=_method]').val('post');
     }
 
     function cetakDokter(url) {

@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\ExportMember;
+use App\Imports\MemberImport;
 use App\Models\Member;
 use App\Models\Setting;
 use Illuminate\Http\Request;
+use Maatwebsite\Excel\Facades\Excel;
 use PDF;
 
 class MemberController extends Controller
@@ -144,5 +147,16 @@ class MemberController extends Controller
         $pdf = PDF::loadView('member.cetak', compact('datamember', 'no', 'setting'));
         $pdf->setPaper(array(0, 0, 566.93, 850.39), 'potrait');
         return $pdf->stream('member.pdf');
+    }
+
+    public function member(){
+        return Excel::download(new ExportMember, 'data_member.xlsx');
+    }
+
+    public function import(Request $request) 
+    {
+        Excel::import(new MemberImport, $request->file('file_member'));
+        
+        return back();
     }
 }

@@ -17,7 +17,7 @@ class BuatPembayaranTabel extends Migration
             $table->increments('id_pembayaran');
             $table->integer('id_pembelian');
             $table->string('no_faktur')->nullable();
-            $table->date('tanggal');
+            $table->date('tanggal_bayar');
             $table->integer('total_harga');
             $table->integer('bayar')->default(0);
             $table->string('status2');

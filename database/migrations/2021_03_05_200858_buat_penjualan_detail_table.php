@@ -18,6 +18,7 @@ class BuatPenjualanDetailTable extends Migration
             $table->integer('id_penjualan');
             $table->string('no_faktur')->nullable();
             $table->integer('id_produk');
+            $table->date('tanggal');
             $table->integer('harga_jual');
             $table->integer('jumlah');
             $table->tinyInteger('diskon')->default(0);
