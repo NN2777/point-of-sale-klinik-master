@@ -147,9 +147,10 @@ class PenjualanDetailController extends Controller
 
         $detail = new PenjualanDetail();
         $detail->id_penjualan = $request->id_penjualan;
-        $detail->no_faktur = $request->no_fakturd;
+        $detail->no_faktur = $request->no_faktur;
         $detail->id_produk = $produk->id_produk;
         $detail->harga_jual = $produk->harga_jual_1;
+        $detail->tanggal = date('y-m-d');
         $detail->jumlah = 1;
         $detail->diskon = $produk->diskon;
         $detail->subtotal = $detail->harga_jual - ($produk->diskon / 100 * $detail->harga_jual);;

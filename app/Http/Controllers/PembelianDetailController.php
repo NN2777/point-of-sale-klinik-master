@@ -80,6 +80,7 @@ class PembelianDetailController extends Controller
         $detail->id_pembelian = $request->id_pembelian;
         $detail->id_produk = $produk->id_produk;
         $detail->harga_beli = $produk->harga_beli;
+        $detail->tanggal = date('y-m-d');
         $detail->jumlah = 1;
         $detail->diskon = 0;
         $detail->subtotal = $produk->harga_beli;

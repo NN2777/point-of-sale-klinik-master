@@ -124,7 +124,7 @@ class KategoriController extends Controller
     {
         Excel::import(new KategoriImport, $request->file('file_kategori'));
         
-        return response()->json('Data berhasil disimpan', 200);
+        return back();
     }
 
     public function exportExcel(){
