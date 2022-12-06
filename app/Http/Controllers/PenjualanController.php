@@ -187,19 +187,20 @@ class PenjualanController extends Controller
     public function destroy($id)
     {
         $penjualan = Penjualan::find($id);
-        $detail    = PenjualanDetail::where('id_penjualan', $penjualan->id_penjualan)->get();
-        foreach ($detail as $item) {
+        if($penjualan->no_faktur != null){
+            $detail    = PenjualanDetail::where('id_penjualan', $penjualan->id_penjualan)->get();
+            foreach ($detail as $item) {
             $produk = Produk::find($item->id_produk);
             if ($produk) {
                 $produk->stok += $item->jumlah;
                 $produk->update();
             }
-
             $item->delete();
         }
-
         $penjualan->delete();
-
+        }else{
+            $penjualan->delete();
+        }
         return response(null, 204);
     }
 

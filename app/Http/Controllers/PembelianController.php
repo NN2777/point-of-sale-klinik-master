@@ -177,20 +177,26 @@ class PembelianController extends Controller
         $pembelian = Pembelian::find($id);
         $detail    = PembelianDetail::where('id_pembelian', $pembelian->id_pembelian)->get();
         $pembayaran = Pembayaran::where('id_pembelian', $pembelian->id_pembelian)->get();
-        foreach ($detail as $item) {
-            $produk = Produk::find($item->id_produk);
-            if ($produk) {
-                $produk->stok -= $item->jumlah;
-                $produk->update();
+        if($pembelian->no_faktur != null){
+            foreach ($detail as $item) {
+                $produk = Produk::find($item->id_produk);
+                if ($produk) {
+                    $produk->stok -= $item->jumlah;
+                    $produk->update();
+                }
+                $item->delete();
             }
-            $item->delete();
+            foreach($pembayaran as $bayar){
+                $bayar->delete();
+            }
+            $pembelian->delete();
         }
-
-        foreach($pembayaran as $bayar){
-            $bayar->delete();
+        else{
+            foreach($pembayaran as $bayar){
+                $bayar->delete();
+            }
+            $pembelian->delete();
         }
-
-        $pembelian->delete();
 
         return response(null, 204);
     }

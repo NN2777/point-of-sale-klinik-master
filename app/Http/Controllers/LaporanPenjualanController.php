@@ -298,7 +298,7 @@ class LaporanPenjualanController extends Controller
             $row['DT_RowIndex'] = ++$no;
             $row['no_faktur'] = $dt->no_faktur;
             $row['tanggal'] = $dt->tanggal;
-            $row['pelanggan'] = $dt->penjualan->member['nama'];
+            $row['pelanggan'] = $dt->penjualan->member['nama'] ?? '';
             $row['jumlah'] = $dt->jumlah;
             $row['harga_beli'] = $dt->harga_jual;
             $row['diskon'] = $dt->diskon ?? 0;

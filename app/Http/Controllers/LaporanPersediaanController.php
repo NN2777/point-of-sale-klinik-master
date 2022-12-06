@@ -29,15 +29,17 @@ class LaporanPersediaanController extends Controller
         // dd($penjualan);
         $no = 0;
         foreach ($produk as $barang) {
+            // $stok = $barang['stok'] <= 0 ? 0 : $barang->stok;
+            $stok = $barang->stok;
             $total_persediaan += $barang->harga_beli;
-            $total_nilai_persediaan += $barang->harga_beli * $barang->stok;
+            $total_nilai_persediaan += $barang->harga_beli * $stok;
             $row = array();
             $row['DT_RowIndex'] = ++$no;
             $row['kode'] = $barang->kode_produk;
             $row['nama_obat'] = $barang->nama_produk;
-            $row['stok'] =  $barang->stok;
+            $row['stok'] =  $stok;
             $row['harga_pokok'] = 'Rp. ' . format_uang($barang->harga_beli);
-            $row['nilai_persediaan'] = 'Rp. ' . format_uang($barang->harga_beli * $barang->stok);
+            $row['nilai_persediaan'] = 'Rp. ' . format_uang($barang->harga_beli * $stok);
             $data[] = $row;
         }
 
